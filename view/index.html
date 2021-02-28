@@ -1,0 +1,322 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+        <title>MoniWeb Home</title>
+        <link href="css/styles.css" rel="stylesheet" />
+        <link href="https://cdn.datatables.net/1.10.20/css/dataTables.bootstrap4.min.css" rel="stylesheet" crossorigin="anonymous" />
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/js/all.min.js" crossorigin="anonymous"></script>
+    </head>
+    <body class="sb-nav-fixed">
+        <nav class="sb-topnav navbar navbar-expand navbar-light bg-white">
+            <div class="ml-3">
+                <img src="img/logo3_smallsize.png">
+           </div>
+            <button class="btn btn-link btn-sm ml-auto" id="sidebarToggle" href="#">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+        </nav>
+        
+<!-- Navigation menu -->
+        <div id="layoutSidenav">
+            <div id="layoutSidenav_nav">
+                <nav class="sb-sidenav accordion sb-sidenav-light bg-white" id="sidenavAccordion">
+                    <div class="sb-sidenav-menu">
+                        <div class="nav">
+
+                            <a id="home" class="nav-link" href="#hometab">Home</a>
+                            <a id="search" class="nav-link" href="#searchtab">Search</a>
+                            <a id="check" class="nav-link" href="#checktab">Check a Website</a> 
+                            <a id="joinplan" class="nav-link" href="#joinplantab">Join a Plan</a>
+                            <a id="login" class="nav-link" href="#logintab">Login</a>
+                            <a id="register" class="nav-link" href="#registertab">Register</a>
+                            <a id="setting" class="nav-link" href="#settingtab">setting</a>
+
+                        </div>
+                    </div>
+                </nav>
+            </div>
+            
+<!-- Main  -->
+            <div id="layoutSidenav_content">
+                <main>
+                    
+<!--                Home -->
+                    <div class="container-fluid">
+                        <div id="hometab" class="tab" >
+                            <ol class="breadcrumb my-3">
+                                <li class="breadcrumb-item active mx-auto">MoniWeb, a Wonderful Website Monitoring Service</li>
+                            </ol>
+
+                            <div class="row justify-content-center">
+                                <div class="col-12">
+                                    <div class="card shadow-lg border-0 rounded-lg mt-1">
+                                        <div class="card-header">
+                                            <h3 class="text-center font-weight-light my-2">Check Web Service Status</h3>
+                                        </div>
+                                        <div class="card-body">
+                                            <form>
+                                                <div class="form-group">
+                                                    <label class="small mb-1" for="inputEmailAddress">URL</label>
+                                                    <input class="form-control py-4" id="inputURL" type="text" placeholder="Enter a URL" />
+                                                </div>
+
+                                                <div class="form-group d-flex align-items-center justify-content-between mt-4 mb-0">
+                                                    <a class="small" href="password.html">Join a plan</a>
+                                                    <a class="btn btn-primary" href="index.html">Check</a>
+                                                </div>
+                                            </form>
+                        `                </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-12">
+                                    <div class="card bg-primary text-white mb-5"> 
+                                        <div class="card-body">Join our Free plan to monitor your web service regularly 
+                                                Our Website Monitoring System will check your website for 24 hours and 7 days.</div>
+                                        <div class="card-footer d-flex align-items-center justify-content-between">
+                                            <a class="small text-white stretched-link" href="#">
+                                                 Register and Join a Free Plan
+                                            </a>
+                                            <div class="small text-white"><i class="fas fa-angle-right"></i></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+<!--                Search -->
+                    <div class="container-fluid">
+                         <div id="searchtab" class="tab" >
+
+                            <form class="form-inline ml-auto mr-0 mt-2 mb-4">
+                                <div class="input-group w-100">
+                                    <input class="form-control rounded-pill" type="text" placeholder="Free Plan" aria-label="Search" aria-describedby="basic-addon2" />
+                                    <div class="input-group-append">
+                                        <button class="btn rounded-circle" type="button"><i class="fas fa-search"></i></button>
+                                    </div>
+                                </div>
+                            </form>
+                             
+                            <h4> 2 results found </h4>
+                            <div>
+                                <ul class="list-group">
+
+                                <!-- Search result list -->
+                                    <li class="list-group-item">
+                                        <a href="https://localhost/freeplan.html">
+                                            <h4>  Free Plan  </h4> 
+                                        </a>
+                                        <p>The Free Plan provides functionality that check five websites free. </p>  
+                                    </li>
+                                    <li class="list-group-item">
+                                        <a href="https://localhost/joinplan.html">
+                                            <h4> Join a Plan </h4> 
+                                        </a>
+                                        <p> Join a Free Plan and try the MoniWeb Monitoring Service functionality. </p>                    
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    
+<!--                Check a Website    -->
+                    <div class="container-fluid">
+                        <div id="checktab" class="tab" >
+                            <h3 class="mt-4">Check a Website</h3>
+                            <ol class="breadcrumb mb-4">
+                                <li class="breadcrumb-item active">Check a website will be implemented here</li>
+                            </ol>
+                        </div>
+                    </div>
+                    
+<!--                Join a Plan    -->
+                    <div class="container-fluid">
+                        <div id="joinplantab" class="tab" >
+                            <h3 class="mt-4">Join a plan</h3>
+                            <ol class="breadcrumb mb-4">
+                                <li class="breadcrumb-item active">Join a Plan will be implemented here</li>
+                            </ol>
+                        </div>
+                    </div>
+            
+<!--                Login -->
+                    <div class="container-fluid">
+  
+                        <div id="logintab" class="tab" >
+                            <div class="row justify-content-center">
+                                <div class="col-12">
+                                    <div class="card shadow-lg border-0 rounded-lg mt-5">
+                                        <div class="card-header"><h3 class="text-center font-weight-light my-4">Login</h3></div>
+                                        <div class="card-body">
+                                            <form>
+                                                <div class="form-group">
+                                                    <label class="small mb-1" for="loginEmailAddress">Email</label>
+                                                    <input class="form-control py-4" id="loginEmailAddress" type="email" placeholder="Enter email address" />
+                                                </div>
+                                                <div class="form-group">
+                                                    <label class="small mb-1" for="loginPassword">Password</label>
+                                                    <input class="form-control py-4" id="loginPassword" type="password" placeholder="Enter password" />
+                                                </div>
+                                                <div class="form-group d-flex align-items-center justify-content-between mt-4 mb-0">
+                                                    <a class="small" href="password.html">Forgot Password?</a>
+                                                    <a class="btn btn-primary" href="index.html">Login</a>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+<!--                Register -->        
+                    <div class="container-fluid">
+                        <div id="registertab" class="tab">
+                                    <div class="card shadow-lg rounded-lg mt-3">
+                                    <div class="card-header">
+                                        <h3 class="text-centern font-weight-light my-3">Create Account</h3>
+                                    </div>
+                                    <div class="card-body">
+                                        <form id="registerForm">
+                                           
+                                            <div class="form-group row">
+                                                <label class="small mb-1 col-2" for="inputFirstName">First Name</label>
+                                                <input class="form-control py-3 col-10" id="inputFirstName" type="text" placeholder="Enter first name" />
+                                            </div>
+                                            <div class="form-group row">
+                                                <label class="small mb-1 col-2" for="inputLastName">Last Name</label>
+                                                <input class="form-control py-3 col-10" id="inputLastName" type="text" placeholder="Enter last name" />
+                                            </div>
+                                         
+                                            
+                                            <div class="form-group row">
+                                                <label class="small mb-1 col-3" for="inputEmailAddress">Email</label>
+                                                <input class="form-control py-3 col-9" id="inputEmailAddress" type="email" aria-describedby="emailHelp" placeholder="Enter email address" />
+                                            </div>
+                                            
+                                            <div class="form-group row">
+                                                <label class="small mb-1 col-3" for="inputPassword">Password</label>
+                                                <input class="form-control py-3 col-9" id="inputPassword" type="password" placeholder="Enter password" />
+                                            </div>
+                                            <div class="form-group row">
+                                                <label class="small mb-1 col-3" for="inputConfirmPassword">Confirm Password</label>
+                                                <input class="form-control py-3 col-9" id="inputConfirmPassword" type="password" placeholder="Confirm password" />
+                                            </div>
+                                            <div class="form-group row">
+                                                <label class="small mb-1 col-3" for="inputPhoneNo">Phone No</label>
+                                                <input class="form-control py-3 col-9" id="inputPhoneNo" type="text" placeholder="Enter phone number" />
+                                            </div>
+                                            <div class="form-group row">
+                                                <label class="small mb-1 col-3" for="inputAddress">Address</label>
+                                                <input class="form-control py-3 col-9" id="inputAddress" type="text" placeholder="Enter address" />
+                                            </div>
+                                                
+                                            <div class="form-group row">
+                                                <label class="small mb-1 col-3" for="inputSuburb">Suburb</label>
+                                                <input class="form-control py-3 col-9" id="inputSuburb" type="text" placeholder="Enter suburb" />
+                                            </div>
+                                            <div class="form-group row">
+                                                <label class="small mb-1 col-3" for="inputState">State</label>
+                                                <input class="form-control py-3 col-9" id="inputState" type="text" placeholder="Enter state" />
+                                            </div>
+                                            
+                                            <div class="form-group mt-4 mb-0"><a class="btn btn-primary btn-block" href="login.html">Create Account</a></div>
+                                        </form>
+                                    </div>
+                                    <div class="card-footer text-center">
+                                        <div class="small"><a href="login.html">Have an account? Go to login</a></div>
+                                    </div>
+                                        
+                                </div>
+                            </div>
+                    </div>
+                    
+<!--                Setting -->                    
+                    <div class="container-fluid">
+                        <div id="settingtab" class="tab" >
+                            <h3 class="mt-4">setting</h3>
+                            
+                            <div class="list-group">
+                                <a id="editprofile" href="#editprofiletab" class="list-group-item list-group-item-action"> Edit Profile
+                                </a>
+                                <a id="changepassword" href="#changepasswordtab" class="list-group-item list-group-item-action">Change Password</a>
+                               
+                            </div>
+                        </div>
+                    </div>
+                    
+<!--                Edit Profile -->                   
+                    <div class="container-fluid">
+                        <div id="editprofiletab" class="tab" >                         
+                            <div class="card shadow-lg rounded-lg mt-3">
+                                    <div class="card-header">
+                                        <h3 class="text-centern font-weight-light my-3">Edit Profile</h3>
+                                    </div>
+                                    <div class="card-body">
+                                        <form id="editProfileForm">
+                                            <div class="form-group row">
+                                                <label class="small mb-1 col-2" for="editFirstName">First Name</label>
+                                                <input class="form-control py-3 col-10" id="editFirstName" type="text" placeholder="Enter first name" />
+                                            </div>
+                                            <div class="form-group row">
+                                                <label class="small mb-1 col-2" for="editLastName">Last Name</label>
+                                                <input class="form-control py-3 col-10" id="editLastName" type="text" placeholder="Enter last name" />
+                                            </div>
+                                         
+                                            
+                                            <div class="form-group row">
+                                                <label class="small mb-1 col-3" for="editEmailAddress">Email</label>
+                                                <input class="form-control py-3 col-9" id="editEmailAddress" type="email" aria-describedby="emailHelp" placeholder="Enter email address" />
+                                            </div>
+                                            
+                                            <div class="form-group row">
+                                                <label class="small mb-1 col-3" for="editPhoneNo">Phone No</label>
+                                                <input class="form-control py-3 col-9" id="editPhoneNo" type="text" placeholder="0421111222" />
+                                            </div>
+                                            <div class="form-group row">
+                                                <label class="small mb-1 col-3" for="editAddress">Address</label>
+                                                <input class="form-control py-3 col-9" id="editAddress" type="text" placeholder="66 Ernest Street" />
+                                            </div>
+                                            <div class="form-group row">
+                                                <label class="small mb-1 col-3" for="editSuburb">Suburb</label>
+                                                <input class="form-control py-3 col-9" id="editSuburb" type="text" placeholder="Southbank" />
+                                            </div>
+                                            <div class="form-group row">
+                                                <label class="small mb-1 col-3" for="editState">State</label>
+                                                <input class="form-control py-3 col-9" id="editState" type="text" placeholder="Queensland" />
+                                            </div>
+
+                                            
+                                            <div class="form-group mt-4 mb-0"><a class="btn btn-primary btn-block" href="login.html">Update Profile</a></div>
+                                        </form>
+                                    </div>
+                                    <div class="card-footer text-center">
+                                        <div class="small"><a href="login.html">Have an account? Go to login</a></div>
+                                    </div>
+                                        
+                                </div>
+                        </div>
+                    </div>
+                    
+<!--                Change Password    -->
+                    <div class="container-fluid">
+                        <div id="changepasswordtab" class="tab" >
+                            <h3 class="mt-4">change password</h3>
+                            <ol class="breadcrumb mb-4">
+                                <li class="breadcrumb-item active">change password  will be implemented here</li>
+                            </ol>
+                        </div>
+                    </div>
+
+                </main>
+            </div>
+        </div>
+        <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" crossorigin="anonymous"></script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
+        <script src="js/scripts.js"></script>
+    </body>
+</html>
