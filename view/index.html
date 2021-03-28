@@ -27,11 +27,15 @@
 
                             <a id="home" class="nav-link" href="#hometab">Home</a>
                             <a id="search" class="nav-link" href="#searchtab">Search</a>
-                            <a id="check" class="nav-link" href="#checktab">Check a Website</a> 
+                            <a id="check" class="nav-link" href="#hometab">Check a Website</a> 
                             <a id="joinplan" class="nav-link" href="#joinplantab">Join a Plan</a>
                             <a id="login" class="nav-link" href="#logintab">Login</a>
                             <a id="register" class="nav-link" href="#registertab">Register</a>
-                            <a id="setting" class="nav-link" href="#settingtab">setting</a>
+                            <a id="myplan" class="nav-link" href="#myplantab">My Plan</a>
+                            <a id="upgradeplan" class="nav-link" href="#upgradeplantab">Upgrade Plan</a>
+                            <a id="setting" class="nav-link" href="#settingtab">Setting</a>
+                            <a id="logout" class="nav-link" href="#logout" >Logout</a>
+
 
                         </div>
                     </div>
@@ -46,25 +50,25 @@
                     <div class="container-fluid">
                         <div id="hometab" class="tab" >
                             <ol class="breadcrumb my-3">
-                                <li class="breadcrumb-item active mx-auto">MoniWeb, a Wonderful Website Monitoring Service</li>
+                                <li class="breadcrumb-item active mx-auto"> Wonderful Website Monitoring Service</li>
                             </ol>
 
                             <div class="row justify-content-center">
                                 <div class="col-12">
                                     <div class="card shadow-lg border-0 rounded-lg mt-1">
                                         <div class="card-header">
-                                            <h3 class="text-center font-weight-light my-2">Check Web Service Status</h3>
+                                            <h3 class="text-center font-weight-light my-2">Check Web Service</h3>
                                         </div>
                                         <div class="card-body">
-                                            <form>
+                                            <form id="checkForm"> <!-- default method: GET -->
                                                 <div class="form-group">
-                                                    <label class="small mb-1" for="inputEmailAddress">URL</label>
+                                                    <label class="small mb-1" for="inputURL">URL</label>
                                                     <input class="form-control py-4" id="inputURL" type="text" placeholder="Enter a URL" />
                                                 </div>
 
                                                 <div class="form-group d-flex align-items-center justify-content-between mt-4 mb-0">
-                                                    <a class="small" href="password.html">Join a plan</a>
-                                                    <a class="btn btn-primary" href="index.html">Check</a>
+                                                    <a class="small" href="#">Join a plan</a>
+                                                    <input class="btn btn-primary" id="checkButton" type="submit" value="Check" /> 
                                                 </div>
                                             </form>
                         `                </div>
@@ -92,7 +96,7 @@
                     <div class="container-fluid">
                          <div id="searchtab" class="tab" >
 
-                            <form class="form-inline ml-auto mr-0 mt-2 mb-4">
+                            <form class="form-inline ml-auto mr-0 mt-2 mb-4">  <!-- Default method: GET -->
                                 <div class="input-group w-100">
                                     <input class="form-control rounded-pill" type="text" placeholder="Free Plan" aria-label="Search" aria-describedby="basic-addon2" />
                                     <div class="input-group-append">
@@ -124,42 +128,255 @@
                     </div>
                     
 <!--                Check a Website    -->
-                    <div class="container-fluid">
+                    <!-- <div class="container-fluid">
                         <div id="checktab" class="tab" >
                             <h3 class="mt-4">Check a Website</h3>
                             <ol class="breadcrumb mb-4">
-                                <li class="breadcrumb-item active">Check a website will be implemented here</li>
+                                <li class="breadcrumb-item active">Check your website</li>
                             </ol>
                         </div>
-                    </div>
+                    </div> -->
                     
-<!--                Join a Plan    -->
+<!--  Join a Plan    -->
                     <div class="container-fluid">
                         <div id="joinplantab" class="tab" >
-                            <h3 class="mt-4">Join a plan</h3>
-                            <ol class="breadcrumb mb-4">
-                                <li class="breadcrumb-item active">Join a Plan will be implemented here</li>
+                            <ol class="breadcrumb my-3">
+                                <li class="breadcrumb-item active mx-auto">Sign up and Monitor your website for Free</li>
                             </ol>
+                            <div class="row">
+                                <div class="col-12">
+                                    <!-- <div class="card bg-primary text-white mb-3"> 
+                                        <div class="card-body">When you sign up,  you can use the monitoring plan for FREE.
+                                            The FREE monitoring plan provides registration of 5 website URLs, automatic checking and notification service.
+                                        </div>
+                                        <div class="card-footer d-flex align-items-center justify-content-between">
+                                            <a class="text-white stretched-link" id="registerforjoin" href="#">
+                                                 Create an account and join a Free Plan
+                                            </a>
+                                            <div class="text-white"><i class="fas fa-angle-right"></i></div>
+                                        </div>
+                                    </div> -->
+                                    <div class="card mb-3"> 
+                                        <div class="card-header bg-primary text-white my-0 py-1">Free Plan
+                                        </div>
+                                        <div class="card-body my-0 py-0"> 
+                                            <ul class="list-group m-0 p-0">
+                                                <li class="list-group-item m-0 p-0"> Check up to 5 website URLs</li>
+                                                <li class="list-group-item m-0 p-0"> Check once in an Hour</li>
+                                                <li class="list-group-item m-0 p-0"> Daily summary report</li>
+                                                <li class="list-group-item m-0 p-0"> Email Notification when abnormal status occurs</li>
+                                                <li class="list-group-item m-0 p-0"> Report and notification history preserved for one day</li>
+                                                <li class="list-group-item m-0 p-0"> Price: Free </li>
+                                            </ul>
+                                        </div>
+                                        <div class="card-footer d-flex align-items-center justify-content-between my-0 py-1">
+                                            <a class="stretched-link" id="registerForJoinFree" href="#">
+                                                 Create an account and join Free Plan
+                                            </a>
+                                            <div class="text-white"><i class="fas fa-angle-right"></i></div>
+                                        </div>
+                                    </div>
+                                    <div class="card mb-3"> 
+                                        <div class="card-header bg-primary text-white my-0 py-1">Standard Plan
+                                        </div>
+                                        <div class="card-body my-0 py-0"> 
+                                            <ul class="list-group m-0 p-0">
+                                                <li class="list-group-item m-0 p-0"> Check up to 20 website URLs </li>
+                                                <li class="list-group-item m-0 p-0"> Check once in 10 minutes</li>
+                                                <li class="list-group-item m-0 p-0"> Daily and Weekly summary report</li>
+                                                <li class="list-group-item m-0 p-0"> Email and SMS Notification when abnormal status occurs</li>
+                                                <li class="list-group-item m-0 p-0"> Report and notification history preserved for one month</li>
+                                                <li class="list-group-item m-0 p-0"> Price: 5$ per month (Add URL for 0.25$)</li>
+                                            </ul>
+                                        </div>
+                                        <div class="card-footer d-flex align-items-center justify-content-between my-0 py-1">
+                                            <a class="stretched-link" id="registerForJoinStandard" href="#">
+                                                 Create an account and join Standard Plan
+                                            </a>
+                                            <div class="text-white"><i class="fas fa-angle-right"></i></div>
+                                        </div>
+                                    </div>
+
+                                    <div class="card mb-3"> 
+                                        <div class="card-header bg-primary text-white my-0 py-1">Premium Plan
+                                        </div>
+                                        <div class="card-body my-0 py-0"> 
+                                            <ul class="list-group m-0 p-0">
+                                                <li class="list-group-item m-0 p-0"> Check up to 50 website URLs </li>
+                                                <li class="list-group-item m-0 p-0"> Check once in one minute</li>
+                                                <li class="list-group-item m-0 p-0"> Daily, Weekly and Monthly summary report</li>
+                                                <li class="list-group-item m-0 p-0"> Email and SMS Notification when abnormal status occurs</li>
+                                                <li class="list-group-item m-0 p-0"> Report and notification history preserved permanently</li>
+                                                <li class="list-group-item m-0 p-0"> Price: 10$ per month (Add URL for 0.2$)</li>
+                                            </ul>
+                                        </div>
+                                        <div class="card-footer d-flex align-items-center justify-content-between my-0 py-1">
+                                            <a class="stretched-link" id="registerForJoinPremium" href="#">
+                                                 Create an account and join Premium Plan
+                                            </a>
+                                            <div class="text-white"><i class="fas fa-angle-right"></i></div>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
                         </div>
                     </div>
-            
-<!--                Login -->
+<!-- My Plan -->
                     <div class="container-fluid">
-  
+                        <div id="myplantab" class="tab" >
+                            <ol class="breadcrumb my-3">
+                                <li class="breadcrumb-item active mx-auto">My Plan</li>
+                            </ol>
+                            <div>
+                                <ul class="list-group">
+                                <!-- Search result list -->
+                                    <li class="list-group-item">
+                                        <form id="upgradeForm" method="GET">
+                                            <div class="form-group d-flex align-items-center justify-content-between mx-2 mb-0">
+                                                <div id="planType"></div> 
+                                                <input class="btn btn-primary" id="upgradeButton" type="button" value="Upgrade Plan" /> 
+                                            </div>  
+                                        </form>
+                                    </li>
+                                </ul>
+                                <ul class="list-group">
+                                    <li class="list-group-item">
+                                        <form id="editURLForm" method="GET">
+                                            <div class="form-group">
+                                                <label for="editURL1" class="small mb-0 pb-0">URL1</label>
+                                                <input class="form-control" name="editURL1" id="editURL1" type="text" placeholder="Enter a URL" required />
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="editURL2" class="small mb-0 pb-0">URL2</label>
+                                                <input class="form-control" name="editURL2" id="editURL2" type="text" placeholder="Enter a URL"  />
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="editURL3" class="small mb-0 pb-0">URL3</label>
+                                                <input class="form-control" name="editURL3" id="editURL3" type="text" placeholder="Enter a URL"  />
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="editURL4" class="small mb-0 pb-0">URL4</label>
+                                                <input class="form-control" name="editURL4" id="editURL4" type="text" placeholder="Enter a URL"  />
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="editURL5" class="small mb-0 pb-0">URL5</label>
+                                                <input class="form-control" name="editURL5" id="editURL5" type="text" placeholder="Enter a URL"  />
+                                            </div>
+                                            <!-- <div class="form-group mt-4 mb-0">
+                                                <input class="btn btn-primary btn-block" id="editURLButton" type="submit" value="Edit URLs" />
+                                            </div>  -->
+                                            <div class="form-group d-flex align-items-center justify-content-between mt-4 mb-0">
+                                                <a href="#" data-toggle="modal" data-target="#modalDeleteURL">Delete an URL</a>
+                                                <input class="btn btn-primary" id="editURLButton" type="submit" value="Edit URL" /> 
+                                            </div>  
+                                        </form> 
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Button trigger modal -->
+                    <!-- <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modalDeleteURL">
+                    </button> -->
+                    
+                    <!-- Modal -->
+                    <div class="modal fade" id="modalDeleteURL" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLongTitle">To delete an URL</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                            </div>
+                            <div class="modal-body">
+                            Empty the URL that you want to delete and click the Edit URL button, then the URL will be deleted. 
+                            </div>
+                            <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                            </div>
+                        </div>
+                        </div>
+                    </div>
+<!-- Upgrade Plan -->
+                    <div class="container-fluid">
+                        <div id="upgradeplantab" class="tab" >
+                            <ol class="breadcrumb my-3">
+                                <li class="breadcrumb-item active mx-auto">Upgrade Plan</li>
+                            </ol>
+
+                            <div class="card mb-3"> 
+                                <div class="card-header bg-primary text-white my-0 py-1">Standard Plan
+                                </div>
+                                <div class="card-body my-0 py-0"> 
+                                    <ul class="list-group m-0 p-0">
+                                        <li class="list-group-item m-0 p-0"> Check up to 20 website URLs </li>
+                                        <li class="list-group-item m-0 p-0"> Check once in 10 minutes</li>
+                                        <li class="list-group-item m-0 p-0"> Daily and Weekly summary report</li>
+                                        <li class="list-group-item m-0 p-0"> Email and SMS Notification when abnormal status occurs</li>
+                                        <li class="list-group-item m-0 p-0"> Report and notification history preserved for one month</li>
+                                        <li class="list-group-item m-0 p-0"> Price: 5$ per month (Add URL for 0.25$)</li>
+                                    </ul>
+                                </div>
+                                <form id="upgradeStandardForm" method="GET">
+                                    <div class="form-group mt-4 mb-0">
+                                        <input class="btn btn-primary btn-block" id="upgradeStandardButton" type="button" value="Upgrade to Standard Plan" />
+                                    </div>
+                                </form>
+                                <!-- <div class="card-footer d-flex align-items-center justify-content-between bg-primary my-0 py-1">
+                                    <a class="stretched-link text-white" id="upgradeStandard" href="#">
+                                            Upgrade to Standard Plan  <div class="text-white"><i class="fas fa-angle-right"></i></div>
+                                    </a>
+                                </div> -->
+                            </div>
+
+                            <div class="card mb-3"> 
+                                <div class="card-header bg-primary text-white my-0 py-1">Premium Plan
+                                </div>
+                                <div class="card-body my-0 py-0"> 
+                                    <ul class="list-group m-0 p-0">
+                                        <li class="list-group-item m-0 p-0"> Check up to 50 website URLs </li>
+                                        <li class="list-group-item m-0 p-0"> Check once in one minute</li>
+                                        <li class="list-group-item m-0 p-0"> Daily, Weekly and Monthly summary report</li>
+                                        <li class="list-group-item m-0 p-0"> Email and SMS Notification when abnormal status occurs</li>
+                                        <li class="list-group-item m-0 p-0"> Report and notification history preserved permanently</li>
+                                        <li class="list-group-item m-0 p-0"> Price: 10$ per month (Add URL for 0.2$)</li>
+                                    </ul>
+                                </div>
+                                <form id="upgradePremiumForm" method="GET">
+                                    <div class="form-group mt-4 mb-0">
+                                        <input class="btn btn-primary btn-block" id="upgradePremiumButton" type="button" value="Upgrade to Premium Plan" />
+                                    </div>
+                                </form>
+                                <!-- <div class="card-footer d-flex align-items-center justify-content-between my-0 py-1">
+                                    <a class="stretched-link" id="registerForJoinPremium" href="#">
+                                            Create an account and join Premium Plan
+                                    </a>
+                                    <div class="text-white"><i class="fas fa-angle-right"></i></div>
+                                </div> -->
+                            </div>
+                        </div>
+                    </div>
+<!-- register upgrade tab  -->
+                   
+<!--    Login -->
+                    <div class="container-fluid">
                         <div id="logintab" class="tab" >
                             <div class="row justify-content-center">
                                 <div class="col-12">
                                     <div class="card shadow-lg border-0 rounded-lg mt-5">
                                         <div class="card-header"><h3 class="text-center font-weight-light my-4">Login</h3></div>
                                         <div class="card-body">
-                                            <form id="loginForm">
+                                            <form id="loginForm" method="POST">
                                                 <div class="form-group">
                                                     <label class="small mb-1" for="loginEmailAddress">Email</label>
-                                                    <input class="form-control py-4" id="loginEmailAddress" type="email" placeholder="Enter email address" />
+                                                    <input class="form-control py-4" id="loginEmailAddress" name="loginEmailAddress" type="email" placeholder="Enter email address" />
                                                 </div>
                                                 <div class="form-group">
                                                     <label class="small mb-1" for="loginPassword">Password</label>
-                                                    <input class="form-control py-4" id="loginPassword" type="password" placeholder="Enter password" />
+                                                    <input class="form-control py-4" id="loginPassword" name="loginPassword" type="password" placeholder="Enter password" />
                                                 </div>
                                                 <div class="form-group d-flex align-items-center justify-content-between mt-4 mb-0">
                                                     <a class="small" href="password.html">Forgot Password?</a>
@@ -182,7 +399,7 @@
                                         <h3 class="text-centern font-weight-light my-3">Create Account</h3>
                                     </div>
                                     <div class="card-body">
-                                        <form id="registerForm">
+                                        <form id="registerForm" method="POST">
                                            
                                             <div class="form-group">
                                                 <input class="form-control py-3" id="inputFirstName" type="text" placeholder="Enter first name" required />
@@ -226,7 +443,7 @@
                                             <!-- <div class="form-group mt-4 mb-0">
                                                 <a class="btn btn-primary btn-block" id="registerAccountButton">Create Account</a>
                                             </div> -->
-                                            
+                
                                         </form>
                                     </div>
                                     <div class="card-footer text-center">
@@ -245,6 +462,7 @@
                             <div class="list-group">
                                 <a id="editprofile" href="#editprofiletab" class="list-group-item list-group-item-action"> Edit Profile
                                 </a>
+                                <input type="hidden" id="hiddenEmail" value="" /> 
                                 <a id="changepassword" href="#changepasswordtab" class="list-group-item list-group-item-action">Change Password</a>
                                 <div class="list-group-item list-group-item-action"> 
                                     Change Theme Mode: <span id="currentmode" class="ml-3">Light</span><a id="changemode" class="btn mx-3 px-2 py-0"><i class="fas fa-exchange-alt"></i></a>
@@ -257,46 +475,52 @@
 <!--                Edit Profile -->                   
                     <div class="container-fluid">
                         <div id="editprofiletab" class="tab" >                         
-                            <div class="card shadow-lg rounded-lg mt-3">
-                                    <div class="card-header">
-                                        <h3 class="text-centern font-weight-light my-3">Edit Profile</h3>
-                                    </div>
-                                    <div class="card-body">
-                                        <form id="editProfileForm">
-                                            <div class="form-group">
-                                                <input class="form-control py-3 col-9" id="editFirstName" type="text" placeholder="Enter first name" />
-                                            </div>
-                                            <div class="form-group">
-                                                <input class="form-control py-3 col-9" id="editLastName" type="text" placeholder="Enter last name" />
-                                            </div>
-                                         
-                                            
-                                            <div class="form-group">
-                                                <input class="form-control py-3 col-9" id="editEmailAddress" type="email" aria-describedby="emailHelp" placeholder="Enter email address" />
-                                            </div>
-                                            
-                                            <div class="form-group">
-                                                <input class="form-control py-3 col-9" id="editPhoneNo" type="text" placeholder="0421111222" />
-                                            </div>
-                                            <div class="form-group">
-                                                <input class="form-control py-3 col-9" id="editAddress" type="text" placeholder="66 Ernest Street" />
-                                            </div>
-                                            <div class="form-group">
-                                                <input class="form-control py-3 col-9" id="editSuburb" type="text" placeholder="Southbank" />
-                                            </div>
-                                            <div class="form-group">
-                                                <input class="form-control py-3 col-9" id="editState" type="text" placeholder="Queensland" />
-                                            </div>
-
-                                            
-                                            <div class="form-group mt-4 mb-0"><a class="btn btn-primary btn-block" href="login.html">Update Profile</a></div>
-                                        </form>
-                                    </div>
-                                    <div class="card-footer text-center">
-                                        <div class="small"><a href="login.html">Have an account? Go to login</a></div>
-                                    </div>
-                                        
+                            <div class="card shadow-lg rounded-lg mt-2">
+                                <div class="card-header">
+                                    <h3 class="text-centern font-weight-light my-2">Edit Profile</h3>
                                 </div>
+                                <div class="card-body">
+                                    <form id="updateProfileForm" method="POST">
+                                        <div class="form-group">
+                                            <label for="editFirstName" class="small mb-0 pb-0">First name</label>
+                                            <input class="form-control" name="editFirstName" id="editFirstName" type="text" placeholder="First name" required />
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="editLastName" class="small mb-0 pb-0">Last name</label>
+                                            <input class="form-control" name="editLastName" id="editLastName" type="text" placeholder="Last name" required />
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="editEmail" class="small mb-0 pb-0">Email</label>
+                                            <input class="form-control" name="editEmail" id="editEmail" type="email" aria-describedby="emailHelp" placeholder="Email" required  />
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="editPhoneNo" class="small mb-0 pb-0">Phone No.</label>
+                                            <input class="form-control"  name="editPhoneNo" id="editPhoneNo" type="text" placeholder="Phone no." required />
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="editAddress" class="small mb-0 pb-0">Address</label>
+                                            <input class="form-control"  name="editAddress" id="editAddress" type="text" placeholder="Address"/>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="editSuburb" class="small mb-0 pb-0">Suburb</label>
+                                            <input class="form-control"  name="editSuburb" id="editSuburb" type="text" placeholder="Suburb"/>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="editState" class="small mb-0 pb-0">State</label>
+                                            <input class="form-control"  name="editState" id="editState" type="text" placeholder="State"/>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="editPostcode" class="small mb-0 pb-0">Postcode</label>
+                                            <input class="form-control"  name="" id="editPostcode" type="text" placeholder="" />
+                                        </div>
+                                       
+                                        <div class="form-group mt-4 mb-0">
+                                            <input class="btn btn-primary btn-block" id="updateProfileButton" type="submit" value="Update Profile" />
+                                        </div>
+                    
+                                    </form>
+                                </div>
+                            </div>
                         </div>
                     </div>
                     

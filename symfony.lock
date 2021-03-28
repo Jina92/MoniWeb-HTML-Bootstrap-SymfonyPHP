@@ -2,6 +2,9 @@
     "php": {
         "version": "7.4"
     },
+    "phpmailer/phpmailer": {
+        "version": "v6.3.0"
+    },
     "psr/cache": {
         "version": "1.0.1"
     },

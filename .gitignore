@@ -1,4 +1,3 @@
-
 ###> symfony/framework-bundle ###
 /.env.local
 /.env.local.php
@@ -10,3 +9,8 @@
 /garbage
 /temp
 ###< symfony/framework-bundle ###
+.env*
+/.env*
+api/johns
+
+
