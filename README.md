@@ -1,7 +1,9 @@
-# Suppose WAMP envirionment. 
+# Setup Procedure of MoniWeb, a web service monitory system. 
 
-1. Installation 
-    d Wamp-installed-directory/www 
+WAMP envirionment assumed 
+
+1.  installation
+    cd Wamp-installed-directory/www 
     composer create-project symfony/website-skeleton PROJ2
     composer require symfony/dotenv
     composer install phpmailer/phpmailer 
