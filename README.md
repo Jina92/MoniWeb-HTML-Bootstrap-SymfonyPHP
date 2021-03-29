@@ -9,10 +9,10 @@ WAMP envirionment assumed
     composer install phpmailer/phpmailer 
 
 2. download the API and web resources 
-    git clone "your remote repository" 
+    git clone https://github.com/Jina92/jina92.github.io.git
 
 3. setup .env  
-    DBHOST=your host for database 
+    ```DBHOST=your host for database 
     DATABASE=your database name 
     PORT=your database port 
     DBUSER=your database user name
@@ -21,6 +21,7 @@ WAMP envirionment assumed
     ORIGIN=your origin URL 
     SMTP_USERNAME=your user name for SMTP server
     SMTP_PASSWORD=your password for SMTP server
+   ```
 
 4. Connect your web site 
     for example,  http://localhost/PROJ2/ 
