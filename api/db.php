@@ -13,7 +13,10 @@
 
         function checkLogin($email, $password) {
             // check user_id(email), password correct
-            $sql = "SELECT CustomerId, Email, Password, Firstname, Theme FROM customer WHERE Email = :email";
+            $sql = "SELECT c.CustomerId as CustomerId, Email, Password, Firstname, Theme, p.Type as PlanType
+                    FROM customer c INNER JOIN customerplan cp INNER JOIN plan p 
+                    ON c.CustomerId = cp.CustomerId and cp.PlanId = p.PlanId
+                    WHERE Email = :email";
             $stmt = $this->dbconn->prepare($sql);
             $stmt->bindParam(':email', $email, PDO::PARAM_STR);
             //$stmt->bindParam(':password', $hpass, PDO::PARAM_STR);
@@ -26,7 +29,8 @@
                             return Array('customerid'=>$result['CustomerId'],
                                 'email'=>$result['Email'],
                                 'firstname'=>$result['Firstname'],
-                                'theme'=>$result['Theme']);
+                                'theme'=>$result['Theme'], 
+                                'plantype'=>$result['PlanType']);
                         }
                         else return false;
                 } else {
@@ -356,21 +360,22 @@
             }
         } 
 
-
-        // function logEvent($uid, $url, $resp_code, $source_ip) {
-        //     $sql = "INSERT INTO logtable (url, uid, response_code, ip_addr) 
-        //         VALUES (:url, :uid, :resp_code, :ip);";
-        //     $stmt = $this->dbconn->prepare($sql);
-        //     $stmt->bindParam(':uid', $uid, PDO::PARAM_INT);
-        //     $stmt->bindParam(':url', $url, PDO::PARAM_STR);
-        //     $stmt->bindParam(':resp_code', $resp_code, PDO::PARAM_INT);
-        //     $stmt->bindParam(':ip', $source_ip, PDO::PARAM_STR);
-        //     $result = $stmt->execute();
-        //     if($result === true) {
-        //         return true;
-        //     } else {
-        //         return false;
-        //     }
-        // }
+        function logEvent($clientip, $sid, $email, $plantype, $action, $responsecode) {
+            $sql = "INSERT INTO actionlog(ClientIP, SessionId, Username, PlanType, LogTime, Action, ResponseCode) 
+            VALUES (:cip, :sessid, :uname, :ptype, CURRENT_TIMESTAMP, :act, :rcode)";
+            $stmt = $this->dbconn->prepare($sql);
+            $stmt->bindParam(':cip', $clientip, PDO::PARAM_STR);
+            $stmt->bindParam(':sessid', $sid, PDO::PARAM_STR);
+            $stmt->bindParam(':uname', $email, PDO::PARAM_STR);
+            $stmt->bindParam(':ptype', $plantype, PDO::PARAM_STR);
+            $stmt->bindParam(':act', $action, PDO::PARAM_STR);
+            $stmt->bindParam(':rcode', $responsecode, PDO::PARAM_INT);
+            $result = $stmt->execute();
+            if($result == true) {
+                return true;
+            } else {
+                return false;
+            }
+        }
     }
 ?>

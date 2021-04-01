@@ -26,7 +26,7 @@ $url_list = $mwDB->getURL('Premium');   // true or false
 $timeout = 5;
 foreach ($url_list as $row) {  // row: pair of <urlid, url> 
     $url = $row[1];
-
+    echo "###Foreach url: ".$url;
     // Check a website
     if (isset($url)) {
         $c_handle = curl_init();  //Initializes a new session and return a cURL handle for use with the curl_setopt(), curl_exec(), and curl_close() functions
@@ -73,12 +73,15 @@ function sendEmail($email, $name, $url) {
 
     $mail->Subject = "MoniWeb Monitoring Notification";
 
-    $mail->Body = "Dear ".$name."\n\n    Your website, ".$url." is abnormal.\n    Please check the status. ";
+    $mail->Body = "<p> Dear ".$name. "<br> <br><br>\n\n    Your website, ".$url." is abnormal.<br><br>\n    Please check the status. <br> </p>";
     echo ($mail->Body);
     $mail->AltBody = "Your website is abnormal. Please check it";
 
     try {
-        $mail->send();
+        echo "email: ".$email;
+        echo "name: ".$name;
+        echo "url: ".$url; 
+       // $mail->send();
         echo "Message has been sent successfully";
     } catch (Exception $e) {
         echo "Mailer Error: " . $mail->ErrorInfo;

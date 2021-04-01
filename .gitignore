@@ -12,5 +12,6 @@
 .env*
 /.env*
 api/johns
+.vscode
 
 

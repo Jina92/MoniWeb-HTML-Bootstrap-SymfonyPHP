@@ -25,15 +25,20 @@ $request = Request::createFromGlobals();
 $response = new Response();
 $session = new Session();
 
+
+
 $response->headers->set('Content-Type', 'application/json');
 $response->headers->set('Access-Control-Allow-Headers', 'origin, content-type, accept');
 $response->headers->set('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
 $response->headers->set('Access-Control-Allow-Origin', $_ENV['ORIGIN']);
 $response->headers->set('Access-Control-Allow-Credentials', 'true');
 
-// Non Session Action 
-// To Check a single URL, login is not necessary 
+
 $requestMethod = $request->getMethod();
+$selectedAction = null;
+
+// Check a single URL, login is not necessary 
+// Non Session Action 
 if($requestMethod  == 'GET') { 
     $selectedAction = $request->query->getAlpha('action');
     if($selectedAction == 'check') { 
@@ -57,26 +62,29 @@ if(!$session->has('sessionObj')) {
                                                    // user-define class 
 }
 
-
-
-
 if(empty($request->query->all())) {   // Error if there are no GET parameters
     $response->setStatusCode(400);
-} elseif($request->cookies->has('PHPSESSID')) {
-    
-    $thisSession = $session->get('sessionObj');
 
-    if($thisSession->is_rate_limited()) { // check two connections happen in the same second. 
+} elseif($request->cookies->has('PHPSESSID')) {
+
+    $thisSession = $session->get('sessionObj');
+    
+    // session id for logging 
+    $sessionid = $request->cookies->get('PHPSESSID');
+    
+    // check too frequent visits to detect cyber attack
+    if($thisSession->isRateLimited()) { // check two conditions and limit the access. 
         $response->setStatusCode(429); // 429 Too Many Requests
     }
+
     if($requestMethod == 'POST') { // register, login
         $selectedAction = $request->query->getAlpha('action');
-        if($selectedAction == 'register') {  // User Registration
-            // if (!empty($thisSession->getCustomerId())) {
-            //     $response->setStatusCode(400);   
-            // }
+
+        // Register User 
+        if($selectedAction == 'register') {  
             if ($request->request->has('email')) { // check the email registered already.
-                $res = $session->get('sessionObj')->emailExist($request->request->get('email'));
+                //$res = $session->get('sessionObj')->emailExist($request->request->get('email'));
+                $res = $session->get('sessionObj')->emailExist($request->request->filter('email', null, FILTER_VALIDATE_EMAIL));
                 if($res) {
                     $response->setStatusCode(200);  // 206 partial content. Email is registered already 
                     $response->setContent(json_encode("Email exists"));
@@ -94,15 +102,16 @@ if(empty($request->query->all())) {   // Error if there are no GET parameters
         
                         if (($request->request->get('password')) == ($request->request->get('confirmpassword'))) {
                             $res = $session->get('sessionObj')->register(
-                                $request->request->get('firstname'), // getAlpha(): Returns the alphabetic characters of the parameter value
-                                $request->request->get('lastname'),
-                                $request->request->get('email'),
+                                $request->request->getAlpha('firstname'), // getAlpha(): Returns the alphabetic characters of the parameter value
+                                $request->request->getAlpha('lastname'),
+                                //$request->request->get('email'),
+                                $request->request->filter('email', null, FILTER_VALIDATE_EMAIL),
                                 $request->request->get('password'),
                                 $request->request->get('phoneno'),
-                                $request->request->get('address'),
-                                $request->request->get('suburb'),
-                                $request->request->get('state'), 
-                                $request->request->get('postcode')
+                                $request->request->getAlnum('address'),
+                                $request->request->getAlpha('suburb'),
+                                $request->request->getAlpha('state'), 
+                                $request->request->getDigits('postcode')
                             );
                             if ($res === true) {
                                 $response->setStatusCode(201);  // 201 Created 
@@ -120,6 +129,7 @@ if(empty($request->query->all())) {   // Error if there are no GET parameters
                 }
             }
         } 
+        // Login 
         elseif($selectedAction == 'login') {
             if($request->request->has('loginEmailAddress') and
                 $request->request->has('loginPassword')) {
@@ -138,9 +148,10 @@ if(empty($request->query->all())) {   // Error if there are no GET parameters
                 $response->setStatusCode(400);
             }
         } 
+        // Get user profile 
         elseif($selectedAction == 'getProfile') {
-            if (empty($thisSession->getCustomerId())) {
-                $response->setStatusCode(403);  
+            if ($thisSession->isLoggedIn() == false) {
+                $response->setStatusCode(401);  
             }
             elseif($thisSession->getEmail()) {
                 $res = $thisSession->getProfile($thisSession->getEmail());
@@ -154,9 +165,10 @@ if(empty($request->query->all())) {   // Error if there are no GET parameters
                 $response->setStatusCode(400);  // BAD Request
             }
         } 
+        // update user profile 
         elseif($selectedAction == 'updateProfile') {
-            if (empty($thisSession->getCustomerId())) {
-                $response->setStatusCode(403);  
+            if ($thisSession->isLoggedIn() == false) {
+                $response->setStatusCode(401);  
             }
             elseif( $request->request->has('editEmail') and 
                 ($thisSession->getEmail() !== $request->request->get('editEmail')) and 
@@ -196,23 +208,14 @@ if(empty($request->query->all())) {   // Error if there are no GET parameters
                     $response->setStatusCode(400);  // BAD Request
                 }
             }
-        
         } else {
             $response->setStatusCode(400);
         }
     } 
     if($requestMethod  == 'GET') { // check URL
-        $selectedAction = $request->query->getAlpha('action');
-        if($selectedAction == 'check') {
-            if($request->query->has('url')) {
-               $res = checkURL($request->query->get('url'));
-                $response->setStatusCode(200);
-                $response->setContent(json_encode($res));
-            }
-        } 
-        elseif($selectedAction == 'myplan') {
-            if (empty($thisSession->getCustomerId())) {
-                $response->setStatusCode(403);  
+        if($selectedAction == 'myplan') {
+            if ($thisSession->isLoggedIn() == false) {
+                $response->setStatusCode(401);
             }
             else {
                 $res = $thisSession->getPlan();
@@ -221,11 +224,11 @@ if(empty($request->query->all())) {   // Error if there are no GET parameters
             }
         } 
         elseif($selectedAction == 'editURL') {
-            if (empty($thisSession->getCustomerId())) {
-                $response->setStatusCode(403);  
+            if ($thisSession->isLoggedIn() == false) {
+                $response->setStatusCode(401);  
             }
             elseif ($request->query->has('url') ) {
-                $array_url = explode("_", $request->query->get('url'));
+                $array_url = explode("$thisSession->_", $request->query->get('url'));
                 $res = $thisSession->editURL($array_url); 
                 if ($res) $response->setStatusCode(200);
                 else $response->setStatusCode(400);
@@ -235,8 +238,8 @@ if(empty($request->query->all())) {   // Error if there are no GET parameters
             }
         }
         elseif($selectedAction == 'upgrade') {
-            if (empty($thisSession->getCustomerId())) {
-                $response->setStatusCode(403);  
+            if ($thisSession->isLoggedIn() == false) {
+                $response->setStatusCode(401);  
             }
             elseif ($request->query->has('level') ) {
                 $res = $thisSession->upgradePlan($request->query->get('level')); 
@@ -247,25 +250,23 @@ if(empty($request->query->all())) {   // Error if there are no GET parameters
         elseif($selectedAction == 'logout') {
             $session->clear();
             $session->invalidate();
-            //$session->get('sessionObj')->logout();
             $response->setStatusCode(200);
         } 
         else {
             $response->setStatusCode(400);
         }
     }
-    if($request->getMethod() == 'DELETE') {           // delete queue, delete comment
+    if($request->getMethod() == 'DELETE') {           
         $response->setStatusCode(400);
     }
-    if($request->getMethod() == 'PUT') {              // enqueue, add comment
+    if($request->getMethod() == 'PUT') {             
         $response->setStatusCode(400);
     }
+    $thisSession->logEvent($request->getClientIp(), $sessionid, $selectedAction, $response->getStatusCode());
 } 
 else {
     $redirect = new RedirectResponse($_SERVER['REQUEST_URI']);
 }
-
-// Do logging just before sending response?
 
 $response->send();
 

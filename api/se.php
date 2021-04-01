@@ -2,14 +2,18 @@
 
     class mwSession {
         // attributes will be stored in session, but always test incognito
-        private int $last_visit = 0;
-        private $last_visits = Array();
 
+        private int $last_visit = 0;
+        private int $first_visit = 0;
+        private int $visit_count = 0;
+        private int $second_24hour = 86400; // 60 * 60 * 24
         
-        private $customerid;
+        private $customerid = 0;
         private $email = "";   //  Email is a user ID 
         private $firstname;
-
+        private $plantype; 
+        
+        
         private $user_token;
     
         private $origin;
@@ -32,16 +36,35 @@
             return $this->email;
         }
 
-        public function is_rate_limited() { 
-            if($this->last_visit == 0) {
-                $this->last_visit = time(); // time() returns the current time in the number of seconds
-                return false;
+        /* 
+         limited: the last and this visits occur at the same second 
+                  (the last visit time equals current time )
+         limited: the visit count during 24 hours is over 1000 
+                  ( visit_count > 1000  and time_period < 86400 ) 
+                  86400 seconds =  60 seconds * 60 minutes * 24 hours  
+         permited: other cases. 
+         */ 
+        public function isRateLimited() {
+        
+            $this->visit_count++;
+            $current_time = time();
+
+            if($this->last_visit == $current_time) {
+                return true;  // two visits occur at the same second, limit the second
+                              // This is not done by human 
             }
-            if($this->last_visit == time()) { // the same second means computer visits not human visits 
-                return true;
+            if(($this->visit_count >= 1000) and 
+               (($current_time - $this->first_visit) <= $this->second_24hour)) {
+                return true;  // more than 1000 visits occur in 24 hours, limit 1001-th visit and the following visits
             }
+            // Permit the visit 
+            if ($this->first_visit == 0) { // This is the first visit 
+                $this->first_visit = $current_time;
+            }
+            $this->last_visit = $current_time;
             return false;
         }
+
         public function login($email, $password) {
             global $mwDB;
             
@@ -51,6 +74,7 @@
             } elseif(count($res) > 0) {
                 $this->email = $res['email'];
                 $this->customerid = $res['customerid'];
+                $this->plantype = $res['plantype'];
                 //$this->user_privilege = 1;
                 //$this->user_token = md5(json_encode($res));
                 return Array('email'=>$res['email'],
@@ -117,21 +141,25 @@
             return $res;
         }
 
-        // public function isLoggedIn() {
-            // if($this->user_id === 0) {
-            //     return false;
-            // } else {
-            //     return Array('Hash'=>$this->user_token);
-            // }
-        // }
-        // public function logout() {
-        //     $session->invalidate();
-            // $this->user_id = 0;
-            // $this->user_privilege = 0;
-        // }
+        public function isLoggedIn() {
+            if($this->customerid == 0) {
+                return false;
+            } else {
+                return true;
+            }
+        }
+        
         public function validate($type, $dirty_string) {
         }
-        public function logEvent() {
+
+        /* 
+         log HTTP actions during a session 
+         not log HTTP actions out of session. 
+         */ 
+        public function logEvent($clientip, $sid, $action, $responsecode) {
+            global $mwDB;
+            $res = $mwDB->logEvent($clientip, $sid, $this->email, $this->plantype, $action, $responsecode);  
+            return $res;
         }
     }
 ?>

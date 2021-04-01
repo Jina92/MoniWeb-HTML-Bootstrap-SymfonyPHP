@@ -266,8 +266,10 @@ function showMyPlanFetch(event) {
     .then(function(response) {
         if(response.status == 404) { // 404 Not Found
             console.log('URL is not found');
-            // you need to clean localStorage.
-            //localStorage.removeItem('csrf');
+            return;
+        }
+        if(response.status == 403) { 
+            console.log('You need to login');
             return;
         }
         
