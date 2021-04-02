@@ -67,6 +67,10 @@
 
         public function login($email, $password) {
             global $mwDB;
+
+            if ((!isset($email)) or (!isset($password))) {
+                return false;
+            }
             
             $res = $mwDB->checkLogin($email, $password);  // customised array returned
             if($res === false) {
@@ -87,22 +91,28 @@
 
         public function register($firstname, $lastname, $email, $password, $phoneno, $address, $suburb, $state, $postcode) {
             global $mwDB; // db connection 
-            //if($csrf == $this->user_token) {  // Checksum using hash, consider it later 
+            if ((!isset($firstname)) or (!isset($lastname)) or (!isset($email)) or 
+                (!isset($password)) or (!isset($phoneno)) or (!isset($address)) or 
+                (!isset($suburb)) or (!isset($state)) or (!isset($postcode)) ) {
+                return false;
+            }
+            
+            if ($this->customerid > 0) return 0; // Logout is necessary to register  // 500 internal error 
                 // You also need to think what you need to save in the localstorage considering security.  talk with John
-                if($mwDB->registerUser($firstname, $lastname, $email, $password, $phoneno, $address, $suburb, $state, $postcode)) {
-                    return true;
-                }
-                else {
-                    return 0;
-                }
-            //} else {
-            //     return false;
-            // }
+            if($mwDB->registerUser($firstname, $lastname, $email, $password, $phoneno, $address, $suburb, $state, $postcode)) {
+                return true;
+            }
+            else {
+                return false;
+            }
+
         }
 
         public function getProfile($email) {
             global $mwDB;
-            
+
+            if (!isset($email)) return false;
+
             $res = $mwDB->getProfile($email);  // customised array returned
             if($res === false) {
                 return false;
@@ -115,28 +125,44 @@
 
         public function emailExist($email) {
             global $mwDB; // db connection 
+
+            if (!isset($email)) return false;
+
             return ($mwDB->emailExist($email));
         }
 
         public function updateProfile($orgEmail, $firstname, $lastname, $newEmail, $phoneno, $address, $suburb, $state, $postcode) {
             global $mwDB; 
+
+            if ((!isset($orgEmail)) or (!isset($firstname)) or (!isset($lastname)) or 
+                (!isset($newEmail)) or (!isset($phoneno)) or (!isset($address)) or 
+                (!isset($suburb)) or (!isset($state)) or (!isset($postcode)) ) {
+                return false;
+            }
             return ($mwDB->updateProfile($orgEmail, $firstname, $lastname, $newEmail, $phoneno, $address, $suburb, $state, $postcode));
         }
 
         public function editURL($array_url) {
             global $mwDB;
+            
+            if (!isset($array_url)) return false;
+
             $res = $mwDB->editURL($this->customerid, $array_url);  // customised array returned
             return $res;
         }
 
         public function getPlan() {
             global $mwDB;
+
+            if ($this->customerid == 0) return false;
             $res = $mwDB->getPlan($this->customerid);  // customised array returned
             return $res;
         }
 
         public function upgradePlan($newPlanType) {
             global $mwDB;
+
+            if (!isset($newPlanType)) return false;
             $res = $mwDB->upgradePLan($this->customerid, $newPlanType);  // customised array returned
             return $res;
         }
@@ -147,9 +173,6 @@
             } else {
                 return true;
             }
-        }
-        
-        public function validate($type, $dirty_string) {
         }
 
         /* 

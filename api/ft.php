@@ -28,17 +28,4 @@ function checkURL($url) {
     return($http_code) ;   // Error: return 0
 }
 
-function testInput($data) {
-    $data = trim($data);
-    $data = stripslashes($data);
-    return $data;
-}
-
-function testInputHTML($data) {
-    $data = trim($data);
-    $data = stripslashes($data);
-    $data = htmlspecialchars($data);
-    $data = htmlentities($data);
-    return $data;
-}
 ?>

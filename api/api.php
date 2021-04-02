@@ -42,21 +42,28 @@ $selectedAction = null;
 if($requestMethod  == 'GET') { 
     $selectedAction = $request->query->getAlpha('action');
     if($selectedAction == 'check') { 
-        if($request->query->has('url')) {
-           $res = checkURL($request->query->get('url'));
+        if($request->query->has('url')) { 
+           
+            $res = checkURL($request->query->get('url'));
             $response->setStatusCode(200);
             $response->setContent(json_encode($res));
         } 
         else {
             $response->setStatusCode(400);
+            $response->setContent(json_encode("Bad URL format, Check your input"));
         }
         $response->send();
         return;
     } 
 }
 
-$session->start();
+// Session start 
+$session->start(); 
 
+// If a session object is not set,  it creates new session object. 
+// If a session object is already set, it means an session is connected 
+// and you can use exiting session object 
+// FYI, login status will be checked in each function of the session object 
 if(!$session->has('sessionObj')) {
     $session->set('sessionObj', new mwSession);   // If a session object is not defined, create a new session object
                                                    // user-define class 
@@ -85,6 +92,7 @@ if(empty($request->query->all())) {   // Error if there are no GET parameters
             if ($request->request->has('email')) { // check the email registered already.
                 //$res = $session->get('sessionObj')->emailExist($request->request->get('email'));
                 $res = $session->get('sessionObj')->emailExist($request->request->filter('email', null, FILTER_VALIDATE_EMAIL));
+                     // filter(): the 2nd para is null --> if the $_POST is null, return this 2nd para value 
                 if($res) {
                     $response->setStatusCode(200);  // 206 partial content. Email is registered already 
                     $response->setContent(json_encode("Email exists"));
@@ -172,7 +180,7 @@ if(empty($request->query->all())) {   // Error if there are no GET parameters
             }
             elseif( $request->request->has('editEmail') and 
                 ($thisSession->getEmail() !== $request->request->get('editEmail')) and 
-                $thisSession->emailExist($request->request->get('editEmail'))) { 
+                $thisSession->emailExist($request->request->filter('editEmail', null, FILTER_VALIDATE_EMAIL))) { 
                     $response->setStatusCode(206);  // 206 partial content. New email is registered already 
                     $response->setContent(json_encode("Email exists"));
             } 
@@ -187,14 +195,14 @@ if(empty($request->query->all())) {   // Error if there are no GET parameters
                     $request->request->has('editPostcode')) {
                     $res = $thisSession->updateProfile(
                         $thisSession->getEmail(),  // old email, which saved in a session variable
-                        $request->request->get('editFirstName'), 
-                        $request->request->get('editLastName'),
-                        $request->request->get('editEmail'), // new email, which is from form 
+                        $request->request->getAlpha('editFirstName'), 
+                        $request->request->getAlpha('editLastName'),
+                        $request->request->filter('editEmail', null, FILTER_VALIDATE_EMAIL), // new email, which is from form 
                         $request->request->get('editPhoneNo'),
-                        $request->request->get('editAddress'),
-                        $request->request->get('editSuburb'),
-                        $request->request->get('editState'), 
-                        $request->request->get('editPostcode')); 
+                        $request->request->getAlnum('editAddress'),
+                        $request->request->getAlpha('editSuburb'),
+                        $request->request->getAlpha('editState'), 
+                        $request->request->getDigits('editPostcode')); 
                     if ($res === true) {
                         $response->setStatusCode(200); 
                     } 
@@ -219,8 +227,13 @@ if(empty($request->query->all())) {   // Error if there are no GET parameters
             }
             else {
                 $res = $thisSession->getPlan();
-                $response->setStatusCode(200);
-                $response->setContent(json_encode($res));
+                if ($res) {
+                    $response->setStatusCode(200);
+                    $response->setContent(json_encode($res));
+                } 
+                else {
+                    $response->setStatusCode(500);
+                }
             }
         } 
         elseif($selectedAction == 'editURL') {
@@ -228,7 +241,7 @@ if(empty($request->query->all())) {   // Error if there are no GET parameters
                 $response->setStatusCode(401);  
             }
             elseif ($request->query->has('url') ) {
-                $array_url = explode("$thisSession->_", $request->query->get('url'));
+                $array_url = explode("_", $request->query->get('url'));
                 $res = $thisSession->editURL($array_url); 
                 if ($res) $response->setStatusCode(200);
                 else $response->setStatusCode(400);
