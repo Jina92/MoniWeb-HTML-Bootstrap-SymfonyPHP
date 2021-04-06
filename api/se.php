@@ -99,13 +99,17 @@
             
             if ($this->customerid > 0) return 0; // Logout is necessary to register  // 500 internal error 
                 // You also need to think what you need to save in the localstorage considering security.  talk with John
-            if($mwDB->registerUser($firstname, $lastname, $email, $password, $phoneno, $address, $suburb, $state, $postcode)) {
+            $res = $mwDB->registerUser($firstname, $lastname, $email, $password, $phoneno, $address, $suburb, $state, $postcode);
+            if ($res > 0) {
+                //if registration is successful, set session variables
+                $this->email = $email;
+                $this->customerid = $res;
+                $this->plantype = "Free";
                 return true;
             }
             else {
                 return false;
             }
-
         }
 
         public function getProfile($email) {
@@ -174,6 +178,16 @@
                 return true;
             }
         }
+        // public function logout() {
+        //     $this->last_visit = 0;
+        //     $this->first_visit = 0;
+        //     $this->visit_count = 0;
+        
+        //     $this->customerid = 0;
+        //     $this->email = ""; 
+        //     $this->firstname = "";
+        //     $this->plantype = ""; 
+        // }
 
         /* 
          log HTTP actions during a session 

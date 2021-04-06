@@ -34,59 +34,87 @@ $response->headers->set('Access-Control-Allow-Origin', $_ENV['ORIGIN']);
 $response->headers->set('Access-Control-Allow-Credentials', 'true');
 
 
+
 $requestMethod = $request->getMethod();
 $selectedAction = null;
 
-// Check a single URL, login is not necessary 
-// Non Session Action 
-if($requestMethod  == 'GET') { 
-    $selectedAction = $request->query->getAlpha('action');
-    if($selectedAction == 'check') { 
-        if($request->query->has('url')) { 
-           
-            $res = checkURL($request->query->get('url'));
-            $response->setStatusCode(200);
-            $response->setContent(json_encode($res));
-        } 
-        else {
-            $response->setStatusCode(400);
-            $response->setContent(json_encode("Bad URL format, Check your input"));
-        }
-        $response->send();
-        return;
-    } 
-}
+
 
 // Session start 
 $session->start(); 
-
 // If a session object is not set,  it creates new session object. 
 // If a session object is already set, it means an session is connected 
 // and you can use exiting session object 
 // FYI, login status will be checked in each function of the session object 
 if(!$session->has('sessionObj')) {
-    $session->set('sessionObj', new mwSession);   // If a session object is not defined, create a new session object
-                                                   // user-define class 
+    $session->set('sessionObj', new mwSession);   // If a session object is not defined, create a new session object                                               // user-define class 
 }
 
+$thisSession = $session->get('sessionObj');
 if(empty($request->query->all())) {   // Error if there are no GET parameters
     $response->setStatusCode(400);
-
-} elseif($request->cookies->has('PHPSESSID')) {
-
-    $thisSession = $session->get('sessionObj');
     
-    // session id for logging 
-    $sessionid = $request->cookies->get('PHPSESSID');
+} 
+elseif (($request->query->has('action')) and ($request->query->getAlpha('action') == 'check')) {  // Check an URL
+    // Check a single URL, login is not necessary 
+    // This is not logged 
+    if($request->query->has('url')) { 
+        
+        $res = checkURL($request->query->get('url'));
+        $response->setStatusCode(200);
+        switch($res) {
+            case 200: 
+            case 302: 
+                $response->setContent(json_encode("The site works well."));
+                break;
+            case 0:  
+                $response->setContent(json_encode("The site does not work."));
+                break;
+            default: 
+                $response->setContent(json_encode("Check Error"));
+                break;
+        }
+    } 
+    else {
+        $response->setStatusCode(400);
+        $response->setContent(json_encode("Check your input"));
+    }
+    $response->send();
+    return;
+}
+elseif (($request->query->has('action')) and ($request->query->getAlpha('action') == 'login')) { // Login
+    if($request->request->has('loginEmailAddress') and
+        $request->request->has('loginPassword')) {
+            $res = $session->get('sessionObj')->login($request->request->get('loginEmailAddress'),
+            $request->request->get('loginPassword'));
+        if ($res == false) {
+            $response->setStatusCode(401);
+        // } elseif(count($res) == 1) {
+        //     $response->setStatusCode(203);
+        //     $response->setContent(json_encode($res));
+        } elseif(count($res) > 0) {
+            $response->setStatusCode(200);
+            $response->setContent(json_encode($res));
+        }
+    } else {
+        $response->setStatusCode(400);
+    }
+    $thisSession->logEvent($request->getClientIp(), $session->getId(), $request->query->getAlpha('action'), $response->getStatusCode());
+    $response->send();
+    return;
+} 
+elseif($request->cookies->has('PHPSESSID')) {
+    // $thisSession = $session->get('sessionObj');
     
+     
     // check too frequent visits to detect cyber attack
     if($thisSession->isRateLimited()) { // check two conditions and limit the access. 
         $response->setStatusCode(429); // 429 Too Many Requests
     }
 
+    $selectedAction = $request->query->getAlpha('action');
+        
     if($requestMethod == 'POST') { // register, login
-        $selectedAction = $request->query->getAlpha('action');
-
         // Register User 
         if($selectedAction == 'register') {  
             if ($request->request->has('email')) { // check the email registered already.
@@ -94,7 +122,7 @@ if(empty($request->query->all())) {   // Error if there are no GET parameters
                 $res = $session->get('sessionObj')->emailExist($request->request->filter('email', null, FILTER_VALIDATE_EMAIL));
                      // filter(): the 2nd para is null --> if the $_POST is null, return this 2nd para value 
                 if($res) {
-                    $response->setStatusCode(200);  // 206 partial content. Email is registered already 
+                    $response->setStatusCode(206);  // 206 partial content. Email is registered already 
                     $response->setContent(json_encode("Email exists"));
                 } 
                 else {  // no registered emails, new profile will be registered 
@@ -107,8 +135,9 @@ if(empty($request->query->all())) {   // Error if there are no GET parameters
                         $request->request->has('suburb') and
                         $request->request->has('state') and
                         $request->request->has('postcode')) {
-        
+                        
                         if (($request->request->get('password')) == ($request->request->get('confirmpassword'))) {
+                           
                             $res = $session->get('sessionObj')->register(
                                 $request->request->getAlpha('firstname'), // getAlpha(): Returns the alphabetic characters of the parameter value
                                 $request->request->getAlpha('lastname'),
@@ -121,6 +150,7 @@ if(empty($request->query->all())) {   // Error if there are no GET parameters
                                 $request->request->getAlpha('state'), 
                                 $request->request->getDigits('postcode')
                             );
+                            
                             if ($res === true) {
                                 $response->setStatusCode(201);  // 201 Created 
                             } elseif ($res === false) {
@@ -138,24 +168,24 @@ if(empty($request->query->all())) {   // Error if there are no GET parameters
             }
         } 
         // Login 
-        elseif($selectedAction == 'login') {
-            if($request->request->has('loginEmailAddress') and
-                $request->request->has('loginPassword')) {
-                $res = $session->get('sessionObj')->login($request->request->get('loginEmailAddress'),
-                    $request->request->get('loginPassword'));
-                if ($res == false) {
-                    $response->setStatusCode(401);
-                // } elseif(count($res) == 1) {
-                //     $response->setStatusCode(203);
-                //     $response->setContent(json_encode($res));
-                } elseif(count($res) > 0) {
-                    $response->setStatusCode(200);
-                    $response->setContent(json_encode($res));
-                }
-            } else {
-                $response->setStatusCode(400);
-            }
-        } 
+        // elseif($selectedAction == 'login') {
+        //     if($request->request->has('loginEmailAddress') and
+        //         $request->request->has('loginPassword')) {
+        //         $res = $session->get('sessionObj')->login($request->request->get('loginEmailAddress'),
+        //             $request->request->get('loginPassword'));
+        //         if ($res == false) {
+        //             $response->setStatusCode(401);
+        //         // } elseif(count($res) == 1) {
+        //         //     $response->setStatusCode(203);
+        //         //     $response->setContent(json_encode($res));
+        //         } elseif(count($res) > 0) {
+        //             $response->setStatusCode(200);
+        //             $response->setContent(json_encode($res));
+        //         }
+        //     } else {
+        //         $response->setStatusCode(400);
+        //     }
+        // } 
         // Get user profile 
         elseif($selectedAction == 'getProfile') {
             if ($thisSession->isLoggedIn() == false) {
@@ -275,7 +305,8 @@ if(empty($request->query->all())) {   // Error if there are no GET parameters
     if($request->getMethod() == 'PUT') {             
         $response->setStatusCode(400);
     }
-    $thisSession->logEvent($request->getClientIp(), $sessionid, $selectedAction, $response->getStatusCode());
+
+    $thisSession->logEvent($request->getClientIp(), $request->cookies->get('PHPSESSID'), $selectedAction, $response->getStatusCode());
 } 
 else {
     $redirect = new RedirectResponse($_SERVER['REQUEST_URI']);

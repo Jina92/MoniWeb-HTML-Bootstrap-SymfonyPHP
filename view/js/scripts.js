@@ -231,15 +231,7 @@ function checkFetch(event) {
         }
         if(response.status == 200) { // 200 OK 
             response.json().then(function(body) {
-                switch(body) {
-                    case 200: 
-                    case 302: 
-                        console.log("The site works well.");
-                        break;
-                    default: 
-                        console.log("The site does not work.");
-                        break;
-                }
+                console.log(body);
             }); 
         }
         if(response.status == 408) { // 408 Request Timeout 
@@ -386,7 +378,7 @@ function editURLFetch(event) {
         else urlList = urlList + "_"+document.getElementById('editURL'+i).value;
     }
     console.log(urlList);
-
+    /* It should be changed to From method, becuase of the data size limitation in GET method */
     fetch('http://localhost/PROJ2/api/api.php?action=editURL&url='+urlList, 
     {
         method: 'GET', 

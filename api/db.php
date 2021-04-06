@@ -155,7 +155,7 @@
                 $initResult = $this->initURLs($customerplanid, 5 );  // you need to add SELECT statment for Plan table
                 if ($initResult == true ) {
                     $this->dbconn->commit();
-                    return true;
+                    return $customerid;
                 } 
                 else {
                     $this->dbconn->rollback();
