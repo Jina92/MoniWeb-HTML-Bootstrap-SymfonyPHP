@@ -5,17 +5,31 @@
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
         <title>MoniWeb Home</title>
         <link href="css/styles.css" rel="stylesheet" />
-        <link href="https://cdn.datatables.net/1.10.20/css/dataTables.bootstrap4.min.css" rel="stylesheet" crossorigin="anonymous" />
+        <!-- <link href="https://cdn.datatables.net/1.10.20/css/dataTables.bootstrap4.min.css" rel="stylesheet" crossorigin="anonymous" /> -->
         <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/js/all.min.js" crossorigin="anonymous"></script>
     </head>
+    <!-- <body class="sb-nav-fixed" onLoad="checkLoggedInFetch(null);"> -->
     <body class="sb-nav-fixed">
         <nav class="sb-topnav navbar navbar-expand navbar-light bg-white">
-            <div class="ml-3">
+            <!-- d-flex justify-content-between -->
+            <div class="ml-3 ">
                 <img src="img/logo3_smallsize.png">
-           </div>
-            <button class="btn btn-link btn-sm ml-auto" id="sidebarToggle" href="#">
-                <span class="navbar-toggler-icon"></span>
-            </button>
+            </div>
+            <div class="ml-auto row"> 
+                <!-- <span class="col d-flex align-self-center mt-1 px-1"> -->
+                    <a class="col d-flex align-self-center mt-1 px-1" id="search" href="#searchtab">
+                        <i class="fas fa-search text-secondary"></i>
+                    </a>
+                <!-- <i class="fas fa-search fa-2x>"></i> -->
+                <button class="col btn btn-link btn-sm px-1 mr-3" id="sidebarToggle" href="#">
+                    <span class="navbar-toggler-icon">
+                </button>
+            </div>
+
+
+                <!-- <button class="btn btn-link btn-sm ml-auto" id="sidebarToggle" href="#">
+                    <span class="navbar-toggler-icon">
+                </button> -->
         </nav>
         
 <!-- Navigation menu -->
@@ -23,18 +37,20 @@
             <div id="layoutSidenav_nav">
                 <nav class="sb-sidenav accordion sb-sidenav-light bg-white" id="sidenavAccordion">
                     <div class="sb-sidenav-menu">
-                        <div class="nav">
+                        <div class="nav" id="sidenavContainer">
 
-                            <a id="home" class="nav-link" href="#hometab">Home</a>
+                            <!-- <a id="home" class="nav-link" href="#hometab">Home</a>
                             <a id="search" class="nav-link" href="#searchtab">Search</a>
                             <a id="check" class="nav-link" href="#hometab">Check a Website</a> 
                             <a id="joinplan" class="nav-link" href="#joinplantab">Join a Plan</a>
                             <a id="login" class="nav-link" href="#logintab">Login</a>
-                            <a id="register" class="nav-link" href="#registertab">Register</a>
-                            <a id="myplan" class="nav-link" href="#myplantab">My Plan</a>
-                            <a id="upgradeplan" class="nav-link" href="#upgradeplantab">Upgrade Plan</a>
-                            <a id="setting" class="nav-link" href="#settingtab">Setting</a>
-                            <a id="logout" class="nav-link" href="#logout" >Logout</a>
+                            <a id="register" class="nav-link" href="#registertab">Register</a> -->
+
+                            
+                            <!-- <a id="myplan" class="nav-link" href="#myplantab" hidden="hidden">My Plan</a>
+                            <a id="upgradeplan" class="nav-link" href="#upgradeplantab" hidden="hidden">Upgrade Plan</a>
+                            <a id="setting" class="nav-link" href="#settingtab"  hidden="hidden">Setting</a>
+                            <a id="logout" class="nav-link" href="#logout"  hidden="hidden">Logout</a> -->
 
 
                         </div>
@@ -50,7 +66,7 @@
                     <div class="container-fluid">
                         <div id="hometab" class="tab" >
                             <ol class="breadcrumb my-3">
-                                <li class="breadcrumb-item active mx-auto"> Wonderful Website Monitoring Service</li>
+                                <li class="breadcrumb-item active mx-auto" id="message"> Wonderful Website Monitoring Service</li>
                             </ol>
 
                             <div class="row justify-content-center">
@@ -65,11 +81,13 @@
                                                     <label class="small mb-1" for="inputURL">URL</label>
                                                     <input class="form-control py-4" id="inputURL" type="text" placeholder="Enter a URL" />
                                                 </div>
-
-                                                <div class="form-group d-flex align-items-center justify-content-between mt-4 mb-0">
-                                                    <a class="small" href="#">Join a plan</a>
+                                                <div class="form-group d-flex flex-row-reverse">
                                                     <input class="btn btn-primary" id="checkButton" type="submit" value="Check" /> 
                                                 </div>
+                                                <!-- <div class="form-group d-flex align-items-center justify-content-between mt-4 mb-0"> --> 
+                                                    <!-- <a class="small" href="#">Join a plan</a> -->
+                                                    <!-- <input class="btn btn-primary" id="checkButton" type="submit" value="Check" />  -->
+                                                <!-- </div> -->
                                             </form>
                         `                </div>
                                     </div>
@@ -242,33 +260,33 @@
                                 </ul>
                                 <ul class="list-group">
                                     <li class="list-group-item">
-                                        <form id="editURLForm" method="GET">
+                                        <form id="updateURLForm" method="GET">
                                             <div class="form-group">
-                                                <label for="editURL1" class="small mb-0 pb-0">URL1</label>
-                                                <input class="form-control" name="editURL1" id="editURL1" type="text" placeholder="Enter a URL" required />
+                                                <label for="updateURL1" class="small mb-0 pb-0">URL1</label>
+                                                <input class="form-control" name="updateURL1" id="updateURL1" type="text" placeholder="Enter a URL" required />
                                             </div>
                                             <div class="form-group">
-                                                <label for="editURL2" class="small mb-0 pb-0">URL2</label>
-                                                <input class="form-control" name="editURL2" id="editURL2" type="text" placeholder="Enter a URL"  />
+                                                <label for="updateURL2" class="small mb-0 pb-0">URL2</label>
+                                                <input class="form-control" name="updateURL2" id="updateURL2" type="text" placeholder="Enter a URL"  />
                                             </div>
                                             <div class="form-group">
-                                                <label for="editURL3" class="small mb-0 pb-0">URL3</label>
-                                                <input class="form-control" name="editURL3" id="editURL3" type="text" placeholder="Enter a URL"  />
+                                                <label for="updateURL3" class="small mb-0 pb-0">URL3</label>
+                                                <input class="form-control" name="updateURL3" id="updateURL3" type="text" placeholder="Enter a URL"  />
                                             </div>
                                             <div class="form-group">
-                                                <label for="editURL4" class="small mb-0 pb-0">URL4</label>
-                                                <input class="form-control" name="editURL4" id="editURL4" type="text" placeholder="Enter a URL"  />
+                                                <label for="updateURL4" class="small mb-0 pb-0">URL4</label>
+                                                <input class="form-control" name="updateURL4" id="updateURL4" type="text" placeholder="Enter a URL"  />
                                             </div>
                                             <div class="form-group">
-                                                <label for="editURL5" class="small mb-0 pb-0">URL5</label>
-                                                <input class="form-control" name="editURL5" id="editURL5" type="text" placeholder="Enter a URL"  />
+                                                <label for="updateURL5" class="small mb-0 pb-0">URL5</label>
+                                                <input class="form-control" name="updateURL5" id="updateURL5" type="text" placeholder="Enter a URL"  />
                                             </div>
                                             <!-- <div class="form-group mt-4 mb-0">
-                                                <input class="btn btn-primary btn-block" id="editURLButton" type="submit" value="Edit URLs" />
+                                                <input class="btn btn-primary btn-block" id="updateURLButton" type="submit" value="update URLs" />
                                             </div>  -->
                                             <div class="form-group d-flex align-items-center justify-content-between mt-4 mb-0">
                                                 <a href="#" data-toggle="modal" data-target="#modalDeleteURL">Delete an URL</a>
-                                                <input class="btn btn-primary" id="editURLButton" type="submit" value="Edit URL" /> 
+                                                <input class="btn btn-primary" id="updateURLButton" type="submit" value="Update URL" /> 
                                             </div>  
                                         </form> 
                                     </li>
@@ -292,7 +310,7 @@
                             </button>
                             </div>
                             <div class="modal-body">
-                            Empty the URL that you want to delete and click the Edit URL button, then the URL will be deleted. 
+                            Empty the URL that you want to delete and click the Update URL button, then the URL will be deleted. 
                             </div>
                             <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
@@ -380,8 +398,8 @@
                                                 </div>
                                                 <div class="form-group d-flex align-items-center justify-content-between mt-4 mb-0">
                                                     <a class="small" href="password.html">Forgot Password?</a>
-                                                    <!-- <a class="btn btn-primary" id="loginButton" href="index.html">Login</a> -->
-                                                    <input class="btn btn-primary" id="loginButton" type="submit" value="Login" /> 
+                                                    <!-- <input class="btn btn-primary" id="loginButton" type="submit" value="Login" />  -->
+                                                    <input class="btn btn-primary" id="loginButton" type="submit" value="Login" />
                                                 </div>
                                             </form>
                                         </div>
@@ -434,12 +452,17 @@
                                                 <input class="form-control py-3" id="inputState" type="text" placeholder="Enter state" />
                                             </div>
                                             <div class="form-group">
-                                                <input class="form-control py-3" id="inputPostcode" type="text" placeholder="Enter postcode" />
+                                                <input class="form-control py-3" id="" type="text" placeholder="Enter postcode" />
                                             </div>
                                             
                                             <div class="form-group mt-4 mb-0">
                                                 <input class="btn btn-primary btn-block" id="registerAccountButton" type="submit" value="Create Account" />
                                             </div>
+
+                                            <!-- <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#messageModal">
+                                                Launch demo modal
+                                            </button> -->
+
                                             <!-- <div class="form-group mt-4 mb-0">
                                                 <a class="btn btn-primary btn-block" id="registerAccountButton">Create Account</a>
                                             </div> -->
@@ -460,7 +483,7 @@
                             <h3 class="mt-4">setting</h3>
                             
                             <div class="list-group">
-                                <a id="editprofile" href="#editprofiletab" class="list-group-item list-group-item-action"> Edit Profile
+                                <a id="updateprofile" href="#updateprofiletab" class="list-group-item list-group-item-action"> Update Profile
                                 </a>
                                 <input type="hidden" id="hiddenEmail" value="" /> 
                                 <a id="changepassword" href="#changepasswordtab" class="list-group-item list-group-item-action">Change Password</a>
@@ -472,46 +495,46 @@
                     </div>
 <!-- End of Side Menu Implementation -----------------------------------------------------------------------------------------> 
  
-<!--                Edit Profile -->                   
+<!--                Update Profile -->                   
                     <div class="container-fluid">
-                        <div id="editprofiletab" class="tab" >                         
+                        <div id="updateprofiletab" class="tab" >                         
                             <div class="card shadow-lg rounded-lg mt-2">
                                 <div class="card-header">
-                                    <h3 class="text-centern font-weight-light my-2">Edit Profile</h3>
+                                    <h3 class="text-centern font-weight-light my-2">Update Profile</h3>
                                 </div>
                                 <div class="card-body">
                                     <form id="updateProfileForm" method="POST">
                                         <div class="form-group">
-                                            <label for="editFirstName" class="small mb-0 pb-0">First name</label>
-                                            <input class="form-control" name="editFirstName" id="editFirstName" type="text" placeholder="First name" required />
+                                            <label for="updateFirstName" class="small mb-0 pb-0">First name</label>
+                                            <input class="form-control" name="updateFirstName" id="updateFirstName" type="text" placeholder="First name" required />
                                         </div>
                                         <div class="form-group">
-                                            <label for="editLastName" class="small mb-0 pb-0">Last name</label>
-                                            <input class="form-control" name="editLastName" id="editLastName" type="text" placeholder="Last name" required />
+                                            <label for="updateLastName" class="small mb-0 pb-0">Last name</label>
+                                            <input class="form-control" name="updateLastName" id="updateLastName" type="text" placeholder="Last name" required />
                                         </div>
                                         <div class="form-group">
-                                            <label for="editEmail" class="small mb-0 pb-0">Email</label>
-                                            <input class="form-control" name="editEmail" id="editEmail" type="email" aria-describedby="emailHelp" placeholder="Email" required  />
+                                            <label for="updateEmail" class="small mb-0 pb-0">Email</label>
+                                            <input class="form-control" name="updateEmail" id="updateEmail" type="email" aria-describedby="emailHelp" placeholder="Email" required  />
                                         </div>
                                         <div class="form-group">
-                                            <label for="editPhoneNo" class="small mb-0 pb-0">Phone No.</label>
-                                            <input class="form-control"  name="editPhoneNo" id="editPhoneNo" type="text" placeholder="Phone no." required />
+                                            <label for="updatePhoneNo" class="small mb-0 pb-0">Phone No.</label>
+                                            <input class="form-control"  name="updatePhoneNo" id="updatePhoneNo" type="text" placeholder="Phone no." required />
                                         </div>
                                         <div class="form-group">
-                                            <label for="editAddress" class="small mb-0 pb-0">Address</label>
-                                            <input class="form-control"  name="editAddress" id="editAddress" type="text" placeholder="Address"/>
+                                            <label for="updateAddress" class="small mb-0 pb-0">Address</label>
+                                            <input class="form-control"  name="updateAddress" id="updateAddress" type="text" placeholder="Address"/>
                                         </div>
                                         <div class="form-group">
-                                            <label for="editSuburb" class="small mb-0 pb-0">Suburb</label>
-                                            <input class="form-control"  name="editSuburb" id="editSuburb" type="text" placeholder="Suburb"/>
+                                            <label for="updateSuburb" class="small mb-0 pb-0">Suburb</label>
+                                            <input class="form-control"  name="updateSuburb" id="updateSuburb" type="text" placeholder="Suburb"/>
                                         </div>
                                         <div class="form-group">
-                                            <label for="editState" class="small mb-0 pb-0">State</label>
-                                            <input class="form-control"  name="editState" id="editState" type="text" placeholder="State"/>
+                                            <label for="updateState" class="small mb-0 pb-0">State</label>
+                                            <input class="form-control"  name="updateState" id="updateState" type="text" placeholder="State"/>
                                         </div>
                                         <div class="form-group">
-                                            <label for="editPostcode" class="small mb-0 pb-0">Postcode</label>
-                                            <input class="form-control"  name="" id="editPostcode" type="text" placeholder="" />
+                                            <label for="updatePostcode" class="small mb-0 pb-0">Postcode</label>
+                                            <input class="form-control"  name="" id="updatePostcode" type="text" placeholder="" />
                                         </div>
                                        
                                         <div class="form-group mt-4 mb-0">
@@ -527,10 +550,81 @@
 <!--                Change Password    -->
                     <div class="container-fluid">
                         <div id="changepasswordtab" class="tab" >
-                            <h3 class="mt-4">change password</h3>
                             <ol class="breadcrumb mb-4">
-                                <li class="breadcrumb-item active">change password  will be implemented here</li>
+                                <li class="breadcrumb-item active mx-auto">Change Password</li>
                             </ol>
+
+                            <form id="changePasswordForm" method="POST">
+                                <div class="form-group">
+                                    <label for="currentPassword" class="small mb-0 pb-0">Current password</label>
+                                    <input class="form-control" name="currentPassword" id="currentPassword" type="password" placeholder="Current password" required />
+                                </div>
+                                <div class="form-group">
+                                    <label for="newPassword" class="small mb-0 pb-0">New password</label>
+                                    <input class="form-control" name="newPassword" id="newPassword" type="password" placeholder="New password" required />
+                                </div>
+                                <div class="form-group">
+                                    <label for="confirmNewPassword" class="small mb-0 pb-0">Current Password</label>
+                                    <input class="form-control" name="confirmNewPassword" id="confirmNewPassword" type="password" placeholder="Confirm new password" required />
+                                </div>
+                                
+                                <div class="form-group mt-4 mb-0">
+                                    <input class="btn btn-primary btn-block" id="changePasswordButton" type="submit" value="Change" />
+                                </div>
+            
+                            </form>
+                        </div>
+                    </div>
+
+                    <div class="container-fluid">
+                        <div id="messagetab" class="tab" >
+                            <!-- <ol class="breadcrumb mb-4">
+                                <li class="breadcrumb-item active mx-auto">Change Password</li>
+                            </ol>
+
+                            <form id="changePasswordForm" method="POST">
+                                <div class="form-group">
+                                    <label for="currentPassword" class="small mb-0 pb-0">Current password</label>
+                                    <input class="form-control" name="currentPassword" id="currentPassword" type="password" placeholder="Current password" required />
+                                </div>
+                                <div class="form-group">
+                                    <label for="newPassword" class="small mb-0 pb-0">New password</label>
+                                    <input class="form-control" name="newPassword" id="newPassword" type="password" placeholder="New password" required />
+                                </div>
+                                <div class="form-group">
+                                    <label for="confirmNewPassword" class="small mb-0 pb-0">Current Password</label>
+                                    <input class="form-control" name="confirmNewPassword" id="confirmNewPassword" type="password" placeholder="Confirm new password" required />
+                                </div>
+                                
+                                <div class="form-group mt-4 mb-0">
+                                    <input class="btn btn-primary btn-block" id="changePasswordButton" type="submit" value="Change" />
+                                </div>
+            
+                            </form> -->
+                        </div>
+                    </div>
+
+
+                      <!-- <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#messageModal">
+                        Launch demo modal
+                    </button> -->
+                      <!-- Modal -->
+                    <div class="modal fade" id="messageModal" tabindex="-1" role="dialog" aria-labelledby="messageModalLabel" aria-hidden="true">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="messageModalLabel">Modal title</h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body" id="messageModal-body">
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Home</button>
+                                    <button type="button" class="btn btn-primary" >My Plan</button>
+                                </div>
+                            </div>
                         </div>
                     </div>
 
