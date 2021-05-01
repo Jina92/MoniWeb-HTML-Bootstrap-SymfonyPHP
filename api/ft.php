@@ -6,7 +6,6 @@ function checkURL($url) {
     // check the website with the given URL 
     // success: return HTTP Response code of the website
     // fail: return 0 
-    echo ($url);
 
     $timeout = 5;
     $cHandle = curl_init();  //Initializes a new session and return a cURL handle for use with the curl_setopt(), curl_exec(), and curl_close() functions
