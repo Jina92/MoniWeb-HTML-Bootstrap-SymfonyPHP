@@ -6,9 +6,15 @@ function checkURL($url) {
     // check the website with the given URL 
     // success: return HTTP Response code of the website
     // fail: return 0 
+    echo ($url);
 
     $timeout = 5;
     $cHandle = curl_init();  //Initializes a new session and return a cURL handle for use with the curl_setopt(), curl_exec(), and curl_close() functions
+    
+    if (strpos($url, "https") !== false)  {
+        curl_setopt($cHandle, CURLOPT_SSL_VERIFYPEER, FALSE);
+        curl_setopt($cHandle, CURLOPT_SSL_VERIFYHOST,  2);
+    }
     curl_setopt($cHandle, CURLOPT_URL, $url ); // Set value to the URL to fetch
     curl_setopt($cHandle, CURLOPT_RETURNTRANSFER, true ); // I think: return as a string 
     // Set value to true to return the transfer as a string of the return value of curl_exec() instead of outputting it directly.

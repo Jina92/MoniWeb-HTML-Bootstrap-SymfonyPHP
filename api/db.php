@@ -22,7 +22,7 @@
             //$stmt->bindParam(':password', $hpass, PDO::PARAM_STR);
             // If you use PDO::PARAM_INT, the where condition is always true. Why?? 
             $stmt->execute();
-            if($stmt->rowCount() > 0) {  // password is correct
+            if($stmt->rowCount() > 0) {  
                 $result = $stmt->fetch(PDO::FETCH_ASSOC);
                 if(strlen($result['Email']) > 0) {
                         if (password_verify($password, $result['Password'])) {// true: verified  
@@ -97,6 +97,41 @@
             $result = $stmt->execute();
             return $result; // true: success false: failure 
             
+        }
+
+        function changePassword($customerid, $curentPassword, $newPassword) {
+            
+            // Check whether the current password is correct 
+            $this->dbconn->beginTransaction();
+            $sql = "SELECT CustomerId, Password FROM customer WHERE CustomerId = :cid";
+            $stmt = $this->dbconn->prepare($sql);
+            $stmt->bindParam(':cid', $customerid, PDO::PARAM_INT);
+            $stmt->execute();
+            if($stmt->rowCount() > 0) {  
+                $result = $stmt->fetch(PDO::FETCH_ASSOC);
+                if($result['CustomerId'] > 0) {
+                    if (!password_verify($currentPassword, $result['Password'])) {// false: not verified  
+                        $this->dbconn->rollback();
+                        return false;
+                    } 
+                    else {  // true: verified, then update the password
+                        $sql = "UPDATE Customer SET Password=:newpass WHERE CustomerId = :cid"; 
+                        $stmt = $this->dbconn->prepare($sql);
+                        $stmt->bindParam(':newpass', $newPassword, PDO::PARAM_STR);
+                        $stmt->bindParam(':cid', $customerid, PDO::PARAM_INT);
+                        $res = $stmt->execute();
+                        if ($res) $this->dbconn->commit();
+                        else $this->dbconn->rollback();
+                        return $res; // true: success false: failure 
+                    }
+                } else {
+                    $this->dbconn->rollback();
+                    return false;
+                }
+            } else {
+                $this->dbconn->rollback();
+                return false;
+            }
         }
 
         private function initURLs($customerplanid, $maxNumURL) {
@@ -231,7 +266,7 @@
             return ($result);
         } 
 
-        function editURL($customerid, $array_url) {
+        function updateURL($customerid, $array_url) {
             $customerplanid = 0;
             $this->dbconn->beginTransaction(); 
             //get plan id for the customer 

@@ -97,6 +97,7 @@
                 return false;
             }
             
+            echo "Step1:".$this->customerid;
             if ($this->customerid > 0) return 0; // Logout is necessary to register  // 500 internal error 
                 // You also need to think what you need to save in the localstorage considering security.  talk with John
             $res = $mwDB->registerUser($firstname, $lastname, $email, $password, $phoneno, $address, $suburb, $state, $postcode);
@@ -146,12 +147,23 @@
             return ($mwDB->updateProfile($orgEmail, $firstname, $lastname, $newEmail, $phoneno, $address, $suburb, $state, $postcode));
         }
 
-        public function editURL($array_url) {
+        public function changePassword($currentPassword, $newPassword, $confirmPassword) {
+            global $mwDB; 
+
+            if ((!isset($currentPassword)) or (!isset($newPassword)) or (!isset($confirmPassword))) {
+                return false;
+            }
+            if ($newPassword != $confirmPassword) 
+                return false;
+            return ($mwDB->changePassword($currentPassword, $newPassword));
+        }
+
+        public function updateURL($array_url) {
             global $mwDB;
             
             if (!isset($array_url)) return false;
 
-            $res = $mwDB->editURL($this->customerid, $array_url);  // customised array returned
+            $res = $mwDB->updateURL($this->customerid, $array_url);  // customised array returned
             return $res;
         }
 

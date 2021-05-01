@@ -25,19 +25,25 @@ $request = Request::createFromGlobals();
 $response = new Response();
 $session = new Session();
 
-
-
 $response->headers->set('Content-Type', 'application/json');
 $response->headers->set('Access-Control-Allow-Headers', 'origin, content-type, accept');
 $response->headers->set('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
 $response->headers->set('Access-Control-Allow-Origin', $_ENV['ORIGIN']);
 $response->headers->set('Access-Control-Allow-Credentials', 'true');
 
-
-
 $requestMethod = $request->getMethod();
 $selectedAction = null;
 
+// echo "step 4";
+// echo $request->server->get('ORIGIN');
+// echo "step 5 <br>";
+// echo $request->server->get('origin');
+// echo "step 6 <br>";
+// echo $request->headers->get('referer');
+// echo "step 7 <br>";
+// echo $request->headers->get('ORIGIN');
+// echo $request->headers->get('origin');
+// die;
 
 
 // Session start 
@@ -47,10 +53,12 @@ $session->start();
 // and you can use exiting session object 
 // FYI, login status will be checked in each function of the session object 
 if(!$session->has('sessionObj')) {
+    //echo " session null <br>";
     $session->set('sessionObj', new mwSession);   // If a session object is not defined, create a new session object                                               // user-define class 
 }
 
 $thisSession = $session->get('sessionObj');
+//echo "get session <br> ";
 if(empty($request->query->all())) {   // Error if there are no GET parameters
     $response->setStatusCode(400);
     
@@ -208,31 +216,31 @@ elseif($request->cookies->has('PHPSESSID')) {
             if ($thisSession->isLoggedIn() == false) {
                 $response->setStatusCode(401);  
             }
-            elseif( $request->request->has('editEmail') and 
-                ($thisSession->getEmail() !== $request->request->get('editEmail')) and 
-                $thisSession->emailExist($request->request->filter('editEmail', null, FILTER_VALIDATE_EMAIL))) { 
+            elseif( $request->request->has('updateEmail') and 
+                ($thisSession->getEmail() !== $request->request->get('updateEmail')) and 
+                $thisSession->emailExist($request->request->filter('updateEmail', null, FILTER_VALIDATE_EMAIL))) { 
                     $response->setStatusCode(206);  // 206 partial content. New email is registered already 
                     $response->setContent(json_encode("Email exists"));
             } 
             else {  // update profile except password. changing password is separated
-                if ($request->request->has('editFirstName') and
-                    $request->request->has('editLastName') and
-                    $request->request->has('editEmail') and
-                    $request->request->has('editPhoneNo') and 
-                    $request->request->has('editAddress') and 
-                    $request->request->has('editSuburb') and
-                    $request->request->has('editState') and
-                    $request->request->has('editPostcode')) {
+                if ($request->request->has('updateFirstName') and
+                    $request->request->has('updateLastName') and
+                    $request->request->has('updateEmail') and
+                    $request->request->has('updatePhoneNo') and 
+                    $request->request->has('updateAddress') and 
+                    $request->request->has('updateSuburb') and
+                    $request->request->has('updateState') and
+                    $request->request->has('updatePostcode')) {
                     $res = $thisSession->updateProfile(
                         $thisSession->getEmail(),  // old email, which saved in a session variable
-                        $request->request->getAlpha('editFirstName'), 
-                        $request->request->getAlpha('editLastName'),
-                        $request->request->filter('editEmail', null, FILTER_VALIDATE_EMAIL), // new email, which is from form 
-                        $request->request->get('editPhoneNo'),
-                        $request->request->getAlnum('editAddress'),
-                        $request->request->getAlpha('editSuburb'),
-                        $request->request->getAlpha('editState'), 
-                        $request->request->getDigits('editPostcode')); 
+                        $request->request->getAlpha('updateFirstName'), 
+                        $request->request->getAlpha('updateLastName'),
+                        $request->request->filter('updateEmail', null, FILTER_VALIDATE_EMAIL), // new email, which is from form 
+                        $request->request->get('updatePhoneNo'),
+                        $request->request->getAlnum('updateAddress'),
+                        $request->request->getAlpha('updateSuburb'),
+                        $request->request->getAlpha('updateState'), 
+                        $request->request->getDigits('updatePostcode')); 
                     if ($res === true) {
                         $response->setStatusCode(200); 
                     } 
@@ -243,6 +251,34 @@ elseif($request->cookies->has('PHPSESSID')) {
                         $response->setStatusCode(500);  // 500 Internal Server Error
                     }
                 } else {
+                    $response->setStatusCode(400);  // BAD Request
+                }
+            }
+        } 
+        elseif($selectedAction == 'changePassword') {
+            if ($thisSession->isLoggedIn() == false) {
+                $response->setStatusCode(401);  
+            }
+            else {  // change  password 
+                if ($request->request->has('currentPassword') and
+                    $request->request->has('newPassword') and
+                    $request->request->has('confirmNewPassword')) {
+
+                    $res = $thisSession->changePassword(
+                        $request->request->get('currentPassword'), 
+                        $request->request->get('newPassword'),
+                        $request->request->get('confirmNewPassword')); 
+                    if ($res === true) {
+                        $response->setStatusCode(200);
+                    } 
+                    elseif ($res === false) {
+                        $response->setStatusCode(400);  // BAD Request
+                    }
+                    else  {  // none
+                        $response->setStatusCode(500);  // 500 Internal Server Error
+                    }
+                } 
+                else {
                     $response->setStatusCode(400);  // BAD Request
                 }
             }
@@ -266,13 +302,13 @@ elseif($request->cookies->has('PHPSESSID')) {
                 }
             }
         } 
-        elseif($selectedAction == 'editURL') {
+        elseif($selectedAction == 'updateURL') {
             if ($thisSession->isLoggedIn() == false) {
                 $response->setStatusCode(401);  
             }
             elseif ($request->query->has('url') ) {
                 $array_url = explode("_", $request->query->get('url'));
-                $res = $thisSession->editURL($array_url); 
+                $res = $thisSession->updateURL($array_url); 
                 if ($res) $response->setStatusCode(200);
                 else $response->setStatusCode(400);
             } 
@@ -294,6 +330,12 @@ elseif($request->cookies->has('PHPSESSID')) {
             $session->clear();
             $session->invalidate();
             $response->setStatusCode(200);
+        } 
+        elseif($selectedAction == 'isloggedin') {
+            if ($thisSession->isLoggedIn() == true) 
+                $response->setStatusCode(200);
+            else 
+                $response->setStatusCode(401); 
         } 
         else {
             $response->setStatusCode(400);
