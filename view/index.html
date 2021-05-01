@@ -5,10 +5,18 @@
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
         <title>MoniWeb Home</title>
         <link href="css/styles.css" rel="stylesheet" />
-        <!-- <link href="https://cdn.datatables.net/1.10.20/css/dataTables.bootstrap4.min.css" rel="stylesheet" crossorigin="anonymous" /> -->
+        <link rel="manifest" href="menifest.json">
+        <link href="https://cdn.datatables.net/1.10.20/css/dataTables.bootstrap4.min.css" rel="stylesheet" crossorigin="anonymous" />
         <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/js/all.min.js" crossorigin="anonymous"></script>
+
+        <!-- description -->
+        <meta name="description" content="Monitoring Web Service" />
+        <!-- theme-color -->
+        <meta name="theme-color" content="#fff" />
     </head>
-    <!-- <body class="sb-nav-fixed" onLoad="checkLoggedInFetch(null);"> -->
+    
+
+
     <body class="sb-nav-fixed">
         <nav class="sb-topnav navbar navbar-expand navbar-light bg-white">
             <!-- d-flex justify-content-between -->
@@ -22,14 +30,9 @@
                     </a>
                 <!-- <i class="fas fa-search fa-2x>"></i> -->
                 <button class="col btn btn-link btn-sm px-1 mr-3" id="sidebarToggle" href="#">
-                    <span class="navbar-toggler-icon">
+                    <span class="navbar-toggler-icon">  <!-- Hamburger menu -->
                 </button>
             </div>
-
-
-                <!-- <button class="btn btn-link btn-sm ml-auto" id="sidebarToggle" href="#">
-                    <span class="navbar-toggler-icon">
-                </button> -->
         </nav>
         
 <!-- Navigation menu -->
@@ -79,17 +82,23 @@
                                             <form id="checkForm"> <!-- default method: GET -->
                                                 <div class="form-group">
                                                     <label class="small mb-1" for="inputURL">URL</label>
-                                                    <input class="form-control py-4" id="inputURL" type="text" placeholder="Enter a URL" />
+                                                    <input class="form-control py-4" id="inputURL" type="text" placeholder="Enter a URL"  required />
+                                                    <!-- pattern="[A-Za-z0-9]+\.[A-Za-z0-9]+\" -->
                                                 </div>
-                                                <div class="form-group d-flex flex-row-reverse">
+                                                <div class="form-group" id="checkMessage" hidden="hidden">
+                                                </div>
+                                                <div class="form-group  d-flex flex-row-reverse align-items-center">
                                                     <input class="btn btn-primary" id="checkButton" type="submit" value="Check" /> 
+                                                    <div id="controlSpinner">
+                                                        <div class="spinner-border spinner-border-sm text-primary mr-2" id="spinner" role="status" hidden="hidden"></div>
+                                                    </div>
                                                 </div>
                                                 <!-- <div class="form-group d-flex align-items-center justify-content-between mt-4 mb-0"> --> 
                                                     <!-- <a class="small" href="#">Join a plan</a> -->
                                                     <!-- <input class="btn btn-primary" id="checkButton" type="submit" value="Check" />  -->
                                                 <!-- </div> -->
                                             </form>
-                        `                </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -115,9 +124,10 @@
                          <div id="searchtab" class="tab" >
 
                             <form class="form-inline ml-auto mr-0 mt-2 mb-4">  <!-- Default method: GET -->
-                                <div class="input-group w-100">
-                                    <input class="form-control rounded-pill" type="text" placeholder="Free Plan" aria-label="Search" aria-describedby="basic-addon2" />
-                                    <div class="input-group-append">
+                                <!-- <div class="input-group w-100"> -->
+                                <div class="position-relative w-100">
+                                    <input class="form-control rounded-pill w-100" type="text" placeholder="Enter a search keyword" aria-label="Search" aria-describedby="basic-addon2" /> 
+                                    <div class="position-absolute top-0 start-90 ">
                                         <button class="btn rounded-circle" type="button"><i class="fas fa-search"></i></button>
                                     </div>
                                 </div>
@@ -144,16 +154,6 @@
                             </div>
                         </div>
                     </div>
-                    
-<!--                Check a Website    -->
-                    <!-- <div class="container-fluid">
-                        <div id="checktab" class="tab" >
-                            <h3 class="mt-4">Check a Website</h3>
-                            <ol class="breadcrumb mb-4">
-                                <li class="breadcrumb-item active">Check your website</li>
-                            </ol>
-                        </div>
-                    </div> -->
                     
 <!--  Join a Plan    -->
                     <div class="container-fluid">
@@ -420,39 +420,39 @@
                                         <form id="registerForm" method="POST">
                                            
                                             <div class="form-group">
-                                                <input class="form-control py-3" id="inputFirstName" type="text" placeholder="Enter first name" required />
+                                                <input class="form-control py-3" id="inputFirstName" type="text" placeholder="Enter first name" pattern="/^[a-z ,.\'-]+$/i" required />
                                             </div>
                                             <div class="form-group">
-                                                <input class="form-control py-3" id="inputLastName" type="text" placeholder="Enter last name" required />
+                                                <input class="form-control py-3" id="inputLastName" type="text" placeholder="Enter last name" pattern="/^[a-z ,.\'-]+$/i" required />
                                             </div>
                                             
                                             <div class="form-group">
                                                 <div id="emailMsg" class="text-danger"></div>
-                                                <input class="form-control py-3" id="inputEmail" type="email" aria-describedby="emailHelp" placeholder="Enter email address" onChange="clearMsg('emailMsg');" />
+                                                <input class="form-control py-3" id="inputEmail" type="email" aria-describedby="emailHelp" placeholder="Enter email address" />
                                                 
                                             </div>
                                             
                                             <div class="form-group">
-                                                <input class="form-control py-3" id="inputPassword" type="password" placeholder="Enter password" />
+                                                <input class="form-control py-3" id="inputPassword" type="password" placeholder="Enter password" pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}" required />
                                             </div>
                                             <div class="form-group">
-                                                <input class="form-control py-3" id="inputConfirmPassword" type="password" placeholder="Confirm password" />
+                                                <input class="form-control py-3" id="inputConfirmPassword" type="password" placeholder="Confirm password" required />
                                             </div>
                                             <div class="form-group">
-                                                <input class="form-control py-3" id="inputPhoneNo" type="text" placeholder="Enter phone number" />
+                                                <input class="form-control py-3" id="inputPhoneNo" type="text" placeholder="Enter phone number" required />
                                             </div>
                                             <div class="form-group">
-                                                <input class="form-control py-3" id="inputAddress" type="text" placeholder="Enter address" />
+                                                <input class="form-control py-3" id="inputAddress" type="text" placeholder="Enter address" required />
                                             </div>
                                                 
                                             <div class="form-group">
-                                                <input class="form-control py-3" id="inputSuburb" type="text" placeholder="Enter suburb" />
+                                                <input class="form-control py-3" id="inputSuburb" type="text" placeholder="Enter suburb" required />
                                             </div>
                                             <div class="form-group">
-                                                <input class="form-control py-3" id="inputState" type="text" placeholder="Enter state" />
+                                                <input class="form-control py-3" id="inputState" type="text" placeholder="Enter state" required />
                                             </div>
                                             <div class="form-group">
-                                                <input class="form-control py-3" id="" type="text" placeholder="Enter postcode" />
+                                                <input class="form-control py-3" id="" type="text" placeholder="Enter postcode" required />
                                             </div>
                                             
                                             <div class="form-group mt-4 mb-0">
@@ -613,7 +613,7 @@
                         <div class="modal-dialog" role="document">
                             <div class="modal-content">
                                 <div class="modal-header">
-                                    <h5 class="modal-title" id="messageModalLabel">Modal title</h5>
+                                    <h5 class="modal-title" id="messageModalLabel">User Account</h5>
                                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                         <span aria-hidden="true">&times;</span>
                                     </button>
@@ -631,8 +631,20 @@
                 </main>
             </div>
         </div>
+        <!-- register service worker -->
+        <script>
+        if ('serviceWorker' in navigator) 
+            {
+              window.addEventListener('load', () => {
+              navigator.serviceWorker.register('./service-worker.js')
+              .then(() => { console.log("[ PWA Fire Bundle ] Service Worker Registered"); });
+            } ); 
+          }  
+        </script>
         <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" crossorigin="anonymous"></script>
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
+        <!-- <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6" crossorigin="anonymous"> -->
+<!-- <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js" integrity="sha384-JEW9xMcG8R+pH31jmWH6WWP0WintQrMb4s7ZOdauHnUtxwoG2vI5DkLtS3qm9Ekf" crossorigin="anonymous"></script> -->
         <script src="js/scripts.js"></script>
     </body>
 </html>

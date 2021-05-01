@@ -1,6 +1,6 @@
 @charset "UTF-8";
 
-/* Jina Back added customised CSS 
+/* Jina added customised CSS 
  * This is commented out in Start Bootstrap CSS 
  */ 
 /* color value of logo
@@ -15,9 +15,27 @@
     background-color: #5ec2bd !important;
 }
 
+.start-90 {
+    left: 90% !important;
+}
+.top-0 {
+    top: 0% !important;
+}
 
+#controlSpinner {
+    animation: fadeOut .5s;
+    animation-delay: 1.8s;
+    animation-fill-mode: forwards; /* Set permanently: Hide permanently */ 
+}
 
-
+@keyframes fadeOut {
+    0% {
+        opacity: 1;  /* Show */
+    }
+    100% {
+        opacity: 0;  /* Transparent, Hide */ 
+    }
+}
 
 
 /*!
