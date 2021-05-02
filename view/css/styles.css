@@ -22,22 +22,6 @@
     top: 0% !important;
 }
 
-#controlSpinner {
-    animation: fadeOut .5s;
-    animation-delay: 1.8s;
-    animation-fill-mode: forwards; /* Set permanently: Hide permanently */ 
-}
-
-@keyframes fadeOut {
-    0% {
-        opacity: 1;  /* Show */
-    }
-    100% {
-        opacity: 0;  /* Transparent, Hide */ 
-    }
-}
-
-
 /*!
 * Start Bootstrap - SB Admin v6.0.2 (https://startbootstrap.com/template/sb-admin)
 * Copyright 2013-2020 Start Bootstrap

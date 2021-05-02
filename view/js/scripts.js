@@ -318,6 +318,7 @@ function loginFetch(event) {
 function registerFetch(event) {
 /* register a user account */ 
 
+    showSpinner();
     event.preventDefault();   
     // check validity
     if (inputPassword.value !== inputConfirmPassword.value)  
@@ -345,6 +346,7 @@ function registerFetch(event) {
         credentials: 'include' 
     })
     .then(function(response) {
+        hideSpinner();
         if(response.status == 400) {
             console.log('register failed');
             return;
@@ -372,7 +374,6 @@ function checkFetch(event) {
 /* PUT: idempotent, POST: not idempotent */ 
 
     showSpinner();
-    console.log("step1");
     event.preventDefault();
     fetch('http://localhost/PROJ2/api/api.php?action=check&url='+document.getElementById('inputURL').value, 
     {
@@ -380,8 +381,7 @@ function checkFetch(event) {
         credentials: 'include' 
     })
     .then(function(response) {
-        // setTimeout(console.log("test"), 1000);
-        // hideSpinner();
+        hideSpinner();
         
         if(response.status == 404) { // 404 Not Found
             console.log('URL is not found');
@@ -670,10 +670,6 @@ function showSpinner() {
 } 
 
 function hideSpinner() {
+    console.log("hide Spinner");
     document.getElementById('spinner').setAttribute("hidden", "hidden");
 } 
-
-function resetSpinner() {
-    document.getElementById('spinner').setAttribute("hidden", "hidden");
-    document.getElementById('controlSpinner').classList.add("animation-fill-mode");
-}
