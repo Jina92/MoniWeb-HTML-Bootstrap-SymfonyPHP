@@ -124,7 +124,7 @@
                             <form class="form-inline ml-auto mr-0 mt-2 mb-4">  <!-- Default method: GET -->
                                 <!-- <div class="input-group w-100"> -->
                                 <div class="position-relative w-100">
-                                    <input class="form-control rounded-pill w-100" type="text" placeholder="Enter a search keyword" aria-label="Search" aria-describedby="basic-addon2" /> 
+                                    <input class="form-control rounded-pill w-100" type="text" placeholder="Enter a search keyword" aria-label="Search" aria-describedby="basic-addon2" required /> 
                                     <div class="position-absolute top-0 start-90 ">
                                         <button class="btn rounded-circle" type="button"><i class="fas fa-search"></i></button>
                                     </div>
@@ -173,8 +173,8 @@
                                         </div>
                                     </div> -->
                                     <div class="card mb-3"> 
-                                        <div class="card-header bg-primary text-white my-0 py-1">Free Plan
-                                        </div>
+                                        <!-- <div class="card-header bg-primary text-white my-0 py-1">Free Plan -->
+                                        <div class="card-header font-weight-bold my-0 py-1">Free Plan</div>
                                         <div class="card-body my-0 py-0"> 
                                             <ul class="list-group m-0 p-0">
                                                 <li class="list-group-item m-0 p-0"> Check up to 5 website URLs</li>
@@ -185,9 +185,9 @@
                                                 <li class="list-group-item m-0 p-0"> Price: Free </li>
                                             </ul>
                                         </div>
-                                        <div class="card-footer d-flex align-items-center justify-content-between my-0 py-1">
+                                        <div class="card-footer bg-primary d-flex align-items-center justify-content-between my-0 py-1">
                                             <a class="stretched-link" id="registerForJoinFree" href="#">
-                                                 Create an account and join Free Plan
+                                                 Join Free Plan
                                             </a>
                                             <div class="text-white"><i class="fas fa-angle-right"></i></div>
                                         </div>
@@ -324,7 +324,7 @@
                             </ol>
 
                             <div class="card mb-3"> 
-                                <div class="card-header bg-primary text-white my-0 py-1">Standard Plan
+                                <div class="card-header font-weight-bold my-0 py-1">Standard Plan
                                 </div>
                                 <div class="card-body my-0 py-0"> 
                                     <ul class="list-group m-0 p-0">
@@ -418,20 +418,20 @@
                                         <form id="registerForm" method="POST">
                                            
                                             <div class="form-group">
-                                                <input class="form-control py-3" id="inputFirstName" type="text" placeholder="Enter first name" pattern="/^[a-z ,.\'-]+$/i" required />
+                                                <input class="form-control py-3" id="inputFirstName" type="text" placeholder="Enter first name" pattern="[a-zA-Z ,.'-]+" title="Alphabet, space, four speciai characters (,.'-) Only"  required />
                                             </div>
                                             <div class="form-group">
-                                                <input class="form-control py-3" id="inputLastName" type="text" placeholder="Enter last name" pattern="/^[a-z ,.\'-]+$/i" required />
+                                                <input class="form-control py-3" id="inputLastName" type="text" placeholder="Enter last name" pattern="[a-zA-Z ,.'-]+" title="Alphabet, space, four speciai characters (,.'-) Only" required />
                                             </div>
                                             
                                             <div class="form-group">
                                                 <div id="emailMsg" class="text-danger"></div>
-                                                <input class="form-control py-3" id="inputEmail" type="email" aria-describedby="emailHelp" placeholder="Enter email address" />
+                                                <input class="form-control py-3" id="inputEmail" type="email" aria-describedby="emailHelp" placeholder="Enter email address" required />
                                                 
                                             </div>
                                             
                                             <div class="form-group">
-                                                <input class="form-control py-3" id="inputPassword" type="password" placeholder="Enter password" pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}" required />
+                                                <input class="form-control py-3" id="inputPassword" type="password" placeholder="Enter password" pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}" title="should contain at least 8 characters, uppercase and lowercase" required />
                                             </div>
                                             <div class="form-group">
                                                 <input class="form-control py-3" id="inputConfirmPassword" type="password" placeholder="Confirm password" required />
@@ -457,14 +457,12 @@
                                                 <input class="btn btn-primary btn-block" id="registerAccountButton" type="submit" value="Create Account" />
                                             </div>
 
-                                            <!-- <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#messageModal">
-                                                Launch demo modal
-                                            </button> -->
-
+                                            <!-- <div class="form-group mt-4 mb-0">
+                                                <button type="button" class="btn btn-primary" id="registerAccountButton">Create Account</button>
+                                            </div>  -->
                                             <!-- <div class="form-group mt-4 mb-0">
                                                 <a class="btn btn-primary btn-block" id="registerAccountButton">Create Account</a>
                                             </div> -->
-                
                                         </form>
                                     </div>
                                     <div class="card-footer text-center">

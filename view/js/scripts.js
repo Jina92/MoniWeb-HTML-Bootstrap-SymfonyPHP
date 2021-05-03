@@ -9,6 +9,8 @@ var temp_elem;
     
     var savedMode; 
 
+    console.log("start");
+    checkLoggedInFetch();
     /* show default items of sidebar menu before login */ 
     showLoggedOutMenuItems(); 
     // addCommonEventListener(); // add common event listeners of logged in and logged out menus 
@@ -43,7 +45,7 @@ var temp_elem;
     
 })();
 
-window.addEventListener('load', function(e) { console.log("load"); checkLoggedInFetch(e)});
+//window.addEventListener('load', function(e) { console.log("load"); checkLoggedInFetch(e)});
 
 /**************************************************/
 /* functions for the Navigation sidebar           */ 
@@ -58,12 +60,10 @@ function setMenuActive(selectedmenu) {
 
     for (i = 0, len = elements.length; i < len; i++) {
         elem = elements[i];
-        if (elem.id === set_tab) {  /* show where am i */
-        elem.classList.add("active");
-        }
-        else {
+        if (elem.id === set_tab)   /* show where am I */
+            elem.classList.add("active");
+        else 
             elem.classList.remove("active");
-        }
     }
 
     tabelements=document.querySelectorAll('div.tab');
@@ -82,7 +82,7 @@ function showTabHideMenu(event, selectedmenu) {
 /* This is implemented for navigation menus */ 
     
     event.preventDefault();
-    
+
     setMenuActive(selectedmenu); 
     document.getElementsByTagName("BODY")[0].classList.remove("sb-sidenav-toggled");
 }
@@ -166,17 +166,13 @@ function toggleNavMode(event) {
 //     container.appendChild(document.createElement("br"));
 // }
 
-
-    
-    
-
 function addLoggedOutEventListener() {
 
 /* Common of logged in and logged out *************************************************************************/
 /* However these are duplicate because the event listener also is reset when a menu is reset  *****************/
     /* NAVIGATION: For the side navigation menu */ 
     document.getElementById('home').addEventListener('click', function(e) { showTabHideMenu(e, 'home')});   
-    document.getElementById('check').addEventListener('click', function(e) { showTabHideMenu(e, 'home')});
+    // document.getElementById('check').addEventListener('click', function(e) { showTabHideMenu(e, 'home')});
     /* home tab */ 
     //document.getElementById('inputURL').addEventListener('click', function(e) { clearMessage('checkMessage'); resetSpinner();});  // clearMessage and reset spinner
     document.getElementById('inputURL').addEventListener('click', function(e) { clearMessage('checkMessage');});
@@ -194,6 +190,7 @@ function addLoggedOutEventListener() {
 
     /* User Register tab: For forms of the register tab */
     document.getElementById('registerForm').addEventListener('submit', function(e) { registerFetch(e)});
+    //document.getElementById('registerButton').addEventListener('click', function(e) { registerFetch(e)});
     document.getElementById('loginForm').addEventListener('submit', function(e) { loginFetch(e)});
     document.getElementById('checkForm').addEventListener('submit', function(e) { checkFetch(e)});
 }
@@ -204,7 +201,7 @@ function addLoggedInEventLister() {
 /* However these are duplicate because the event listener also is reset when a menu is reset  *****************/
     /* NAVIGATION: For the side navigation menu */ 
     document.getElementById('home').addEventListener('click', function(e) { showTabHideMenu(e, 'home')});   
-    document.getElementById('check').addEventListener('click', function(e) { showTabHideMenu(e, 'home')});
+    // document.getElementById('check').addEventListener('click', function(e) { showTabHideMenu(e, 'home')});
     /* home tab */ 
     document.getElementById('inputURL').addEventListener('click', function(e) { clearMessage('checkMessage')});
 
@@ -235,12 +232,13 @@ function addLoggedInEventLister() {
 function showLoggedOutMenuItems() {
     document.getElementById("sidenavContainer").innerHTML = `
     <a id="home" class="nav-link" href="#hometab"><i class="fas fa-home mr-1"></i> Home</a>
-    <a id="check" class="nav-link" href="#hometab"><i class="fas fa-check-square mr-1"></i> Check a Website</a> 
     <a id="joinplan" class="nav-link" href="#joinplantab"><i class="far fa-handshake mr-1"></i> Join a Plan</a>
     <a id="login" class="nav-link" href="#logintab"><i class="fas fa-sign-in-alt mr-1"></i> Login</a>
     <a id="register" class="nav-link" href="#registertab"><i class="fas fa-registered mr-1"></i> Register</a>
     `; 
 
+    // <a id="check" class="nav-link" href="#hometab"><i class="fas fa-check-square mr-1"></i> Check a Website</a> 
+    
     addLoggedOutEventListener();
 }
 
@@ -277,6 +275,7 @@ function loggedOutInit() {
 function loginFetch(event) {
 /* login with email and password */ 
 
+    showSpinner();
     event.preventDefault();
     var loginf = document.getElementById('loginForm');
     var formD = new FormData(loginf); 
@@ -287,6 +286,7 @@ function loginFetch(event) {
         credentials: 'include' 
     })
     .then(function(response) {
+        hideSpinner();
         if(response.status == 401) {
             console.log('login failed');
             // you need to clean localStorage.
@@ -320,9 +320,11 @@ function registerFetch(event) {
 
     showSpinner();
     event.preventDefault();   
+
     // check validity
     if (inputPassword.value !== inputConfirmPassword.value)  
         alert("Input password and confirmed password should be same.");
+
 
     var formD = new FormData(); 
     // FormData lets you compile a set of key/value pairs to send using XMLHttpRequest
@@ -413,6 +415,8 @@ function showMyPlanFetch(event) {
 /* display the user's plan details */
 
     var i=0;
+
+    showSpinner();
     event.preventDefault();
     
     fetch('http://localhost/PROJ2/api/api.php?action=myplan', 
@@ -421,6 +425,7 @@ function showMyPlanFetch(event) {
         credentials: 'include' 
     })
     .then(function(response) {
+        hideSpinner();
         if(response.status == 404) { // 404 Not Found
             console.log('URL is not found');
             return;
@@ -455,6 +460,7 @@ function showMyPlanFetch(event) {
 function showProfileFetch(event) {
 /* Display the user profile details */
 
+    showSpinner();
     event.preventDefault();
 
     var formD = new FormData();
@@ -467,6 +473,7 @@ function showProfileFetch(event) {
         credentials: 'include' 
     })
     .then(function(response) {
+        hideSpinner();
         if(response.status == 404) { // 404 Not Found
             console.log('URL is not found');
             // you need to clean localStorage.
@@ -500,6 +507,7 @@ function showProfileFetch(event) {
 function updateProfileFetch(event) {
 /* Update the user profile details */
 
+    showSpinner();
     event.preventDefault();
     updateProfilef= document.getElementById('updateProfileForm');
     var formD = new FormData(updateProfilef);
@@ -511,6 +519,7 @@ function updateProfileFetch(event) {
         credentials: 'include' 
     })
     .then(function(response) {
+        hideSpinner();
         if(response.status == 404) { // 404 Not Found
             console.log('URL is not found');
             // you need to clean localStorage.
@@ -537,6 +546,7 @@ function updateURLFetch(event) {
     var urlList;
     var i, numberofURL;
 
+    showSpinner();
     event.preventDefault();   
     numberofURL = 5;
     /* generate a url list as a string type */
@@ -552,6 +562,7 @@ function updateURLFetch(event) {
         credentials: 'include' 
     })
     .then(function(response) {
+        hideSpinner();
         if(response.status == 400) {
             console.log('register failed');
             return;
@@ -570,6 +581,7 @@ function updateURLFetch(event) {
 function upgradePlanFetch(event, level) {
 /* Upgrade the user's plan to the higher, premium plan */
 
+    showSpinner();
     event.preventDefault();  
     
     fetch('http://localhost/PROJ2/api/api.php?action=upgrade&level='+level, 
@@ -578,6 +590,7 @@ function upgradePlanFetch(event, level) {
         credentials: 'include' 
     })
     .then(function(response) {
+        hideSpinner();
         if(response.status == 400) {
             console.log('upgrade failed');
             return;
@@ -636,7 +649,7 @@ function logoutFetch(event, level) {
     })
     .catch(error => console.log(error));
 }
-function checkLoggedInFetch(event, level) { 
+function checkLoggedInFetch() { 
     
     fetch('http://localhost/PROJ2/api/api.php?action=isloggedin', 
     {
@@ -645,14 +658,19 @@ function checkLoggedInFetch(event, level) {
     })
     .then(function(response) {
         if(response.status == 200) {
-            console.log("It is logged in");
-            showLoggedInMenuItems();
-            return;
-        } else {
-            console.log("not logged in:"+response.status);
-            showLoggedOutMenuItems();
-            return;
-        }
+            console.log("in checkLoggedInFetch");
+            response.json().then(function(body) { 
+                console.log(body.loggedin);
+                if (body.loggedin == 'true') {
+                    console.log("It is logged in");
+                    showLoggedInMenuItems();
+                    return;
+                }
+            }); 
+        } 
+        console.log("not logged in:"+response.status);
+        showLoggedOutMenuItems();
+        return;
     })
     .catch(error => console.log(error));
 }
@@ -665,7 +683,7 @@ function clearMessage(messageId) {
 }
 
 function showSpinner() {
-    
+    console.log("show Spinner");
     document.getElementById('spinner').removeAttribute("hidden");
 } 
 
