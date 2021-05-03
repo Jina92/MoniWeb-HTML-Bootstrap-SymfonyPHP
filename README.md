@@ -29,10 +29,15 @@ WAMP envirionment assumed
 
 # API File Structure of Web Service Monitoring System
 
-api/api.php --> MoniWeb Web Application Interfaces 
- - db.php --> all database functions, which connect to database. 
- - se.php --> session class definition 
- - ft.php --> functions called from api.php
+1. MoniWeb Web Application
+ - api/api.php --> MoniWeb Web Application Main Interfaces 
+ - db.php --> The database object, which has all methods to connect to database. 
+     The methods of the session objesct call the database object methods.     
+ - se.php --> the session object ( class definition )
+ - ft.php --> other functions called in api.php
+ 
 
-checkserver.php --> MoniWeb check server. This will be registerd in CRON. 
-  - db_svr.php 
+2. MoniWeb check server 
+  - checkserver.php --> MoniWeb check server. This will be registerd in CRON. 
+  - db_svr.php  --> all database functions, which connect to database. 
+
