@@ -41,3 +41,6 @@ WAMP envirionment assumed
   - checkserver.php --> MoniWeb check server. This will be registerd in CRON. 
   - db_svr.php  --> all database functions, which connect to database. 
 
+# Notes
+  api.php has instantiation of database and session objects at its first part. 
+  At the next, it calls session_start to check session pre-exist and start a new session. 
