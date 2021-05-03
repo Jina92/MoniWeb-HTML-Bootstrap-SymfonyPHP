@@ -97,7 +97,6 @@
                 return false;
             }
             
-            echo "Step1:".$this->customerid;
             if ($this->customerid > 0) return 0; // Logout is necessary to register  // 500 internal error 
                 // You also need to think what you need to save in the localstorage considering security.  talk with John
             $res = $mwDB->registerUser($firstname, $lastname, $email, $password, $phoneno, $address, $suburb, $state, $postcode);

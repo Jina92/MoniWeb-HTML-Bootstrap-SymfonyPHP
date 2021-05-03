@@ -19,10 +19,23 @@ $dotenv->load(__DIR__.'/.env');
  *  This should be before "new mwModel", because mwModel constructor use it.  
  */
 
-$mwDB = new mwModel;   // user-define class for database connection
 
+/*****************************************************************
+ * Instantiated the database class
+ * The main job of API is connecting and manipulating data of the database.
+ * mwModel is the class of Database connection and manipulation
+ * The mwDB variable is instanciated of the mwModel class.
+ * Most of API will use this variable as a global to connect the database from anywhere in these API. 
+ * Therefore it needs to be instanciated at the first part of API. 
+ ******************************************************************/
+$mwDB = new mwModel;   // mwModel: user-define class for database connection
 $request = Request::createFromGlobals();
 $response = new Response();
+/*****************************************************************
+ * Instantiated the session class
+ * All API functions need to be managed by session including database connection functions. 
+ * The session object needs to be instantiated 
+ ******************************************************************/
 $session = new Session();
 
 $response->headers->set('Content-Type', 'application/json');
@@ -45,8 +58,9 @@ $selectedAction = null;
 // echo $request->headers->get('origin');
 // die;
 
-
-// Session start 
+/********************************************************
+ * Session start 
+ ********************************************************/
 $session->start(); 
 // If a session object is not set,  it creates new session object. 
 // If a session object is already set, it means an session is connected 
@@ -332,8 +346,13 @@ elseif($request->cookies->has('PHPSESSID')) {
             $response->setStatusCode(200);
         } 
         elseif($selectedAction == 'isloggedin') {
-            if ($thisSession->isLoggedIn() == true) 
+            //echo "step 1 in isloggedin";
+            if ($thisSession->isLoggedIn() == true) {
+                //echo "step 2 in isloggedin";
                 $response->setStatusCode(200);
+                $response->setContent(json_encode(Array('loggedin'=>'true')));
+                //$thisSession->logEvent('127.0.0.1', '1111', 'isloggedin', 200);
+            }
             else 
                 $response->setStatusCode(401); 
         } 
