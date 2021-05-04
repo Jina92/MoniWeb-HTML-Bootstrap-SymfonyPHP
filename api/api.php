@@ -47,16 +47,25 @@ $response->headers->set('Access-Control-Allow-Credentials', 'true');
 $requestMethod = $request->getMethod();
 $selectedAction = null;
 
-// echo "step 4";
-// echo $request->server->get('ORIGIN');
-// echo "step 5 <br>";
-// echo $request->server->get('origin');
-// echo "step 6 <br>";
-// echo $request->headers->get('referer');
-// echo "step 7 <br>";
-// echo $request->headers->get('ORIGIN');
-// echo $request->headers->get('origin');
-// die;
+/* Origin blocing */
+/* whiltelist: localhost */ 
+$originHost = $request->headers->get('ORIGIN');
+$originPass = false;
+if (isset($originHost)) {
+    if (strpos($request->headers->get('ORIGIN'), "localhost") !== false) 
+        $originPass = true; 
+} 
+if ($originPass === false) {
+    if (strpos($request->headers->get('referer'), "localhost") !== false) {
+        $originPass = true; 
+    }
+}
+if ($originPass === false) { 
+    $response->setStatusCode(403);
+    //$thisSession->logEvent($request->getClientIp(), $request->cookies->get('PHPSESSID'), "originblocked", $response->getStatusCode());
+    $response->send();
+    return;
+} 
 
 /********************************************************
  * Session start 
