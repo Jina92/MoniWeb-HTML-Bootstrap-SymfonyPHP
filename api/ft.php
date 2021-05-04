@@ -33,4 +33,15 @@ function checkURL($url) {
     return($http_code) ;   // Error: return 0
 }
 
+function logTestAction($message) {
+    $fname = "test.log";
+    if (file_exists($fname)) { 
+        $fp = fopen($fname, "a");
+    }
+    else {
+        $fp = fopen($fname, "w");
+    }
+    fwrite($fp, $message."\n");
+    fclose($fp);
+}
 ?>
