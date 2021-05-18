@@ -95,8 +95,8 @@
             $stmt->bindParam(':postcode', $postcode, PDO::PARAM_STR);
             $stmt->bindParam(':email', $orgEmail, PDO::PARAM_STR);
             $result = $stmt->execute();
-            return $result; // true: success false: failure 
-            
+            if (($result == true) && ($stmt->rowCount() > 0)) return true; 
+            else return false;  // true: success false: failure 
         }
 
         function changePassword($customerid, $curentPassword, $newPassword) {

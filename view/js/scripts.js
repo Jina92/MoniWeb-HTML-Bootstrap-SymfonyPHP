@@ -85,6 +85,15 @@ function showTabHideMenu(event, selectedmenu) {
 
     setMenuActive(selectedmenu); 
     document.getElementsByTagName("BODY")[0].classList.remove("sb-sidenav-toggled");
+
+    let first_name = localStorage.getItem('firstname');
+    let theme = localStorage.getItem('theme');
+    if ((selectedmenu == 'home') && (first_name)) {
+        document.getElementById("message").innerHTML = "Welcome "+ first_name;
+    }
+    if ((selectedmenu == 'setting') && (theme)) {
+        document.getElementById("currentmode").innerHTML = theme;
+    }
 }
 
 function showTab(event, selectedmenu) {
@@ -144,6 +153,7 @@ function toggleNavMode(event) {
     var toggledTheme; 
 
     toggledTheme = (localStorage.getItem('theme') == 'Dark')?'Light':'Dark';
+    localStorage.setItem('theme', toggledTheme);
     setTheme(toggledTheme);
 }
 
@@ -174,7 +184,6 @@ function addLoggedOutEventListener() {
     document.getElementById('home').addEventListener('click', function(e) { showTabHideMenu(e, 'home')});   
     // document.getElementById('check').addEventListener('click', function(e) { showTabHideMenu(e, 'home')});
     /* home tab */ 
-    //document.getElementById('inputURL').addEventListener('click', function(e) { clearMessage('checkMessage'); resetSpinner();});  // clearMessage and reset spinner
     document.getElementById('inputURL').addEventListener('click', function(e) { clearMessage('checkMessage');});
 
 /* unique of logged out *************************************************************************/ 
@@ -201,7 +210,7 @@ function addLoggedInEventLister() {
 /* However these are duplicate because the event listener also is reset when a menu is reset  *****************/
     /* NAVIGATION: For the side navigation menu */ 
     document.getElementById('home').addEventListener('click', function(e) { showTabHideMenu(e, 'home')});   
-    // document.getElementById('check').addEventListener('click', function(e) { showTabHideMenu(e, 'home')});
+    //document.getElementById('check').addEventListener('click', function(e) { showTabHideMenu(e, 'home')});
     /* home tab */ 
     document.getElementById('inputURL').addEventListener('click', function(e) { clearMessage('checkMessage')});
 
@@ -247,9 +256,10 @@ function showLoggedInMenuItems() {
     <a id="home" class="nav-link" href="#hometab"><i class="fas fa-home mr-1"></i> Home </a>
     <a id="myplan" class="nav-link" href="#myplantab"><i class="fas fa-poll-h mr-1"></i> <div>My Plan</div></a>
     <a id="setting" class="nav-link" href="#settingtab"><i class="fas fa-cog mr-1"></i> Setting</a>
-    <a id="check" class="nav-link" href="#hometab"><i class="fas fa-check-square mr-1"></i> Check a Website</a>    
     <a id="logout" class="nav-link" href="#logout"><i class="fas fa-sign-out-alt mr-1"></i> Logout</a>
     `;
+    //<a id="check" class="nav-link" href="#hometab"><i class="fas fa-check-square mr-1"></i> Check a Website</a>    
+    
 
     addLoggedInEventLister();
 }
@@ -266,6 +276,7 @@ function loggedOutInit() {
     setMenuActive("home"); 
     document.getElementsByTagName("BODY")[0].classList.remove("sb-sidenav-toggled");
     document.getElementById("message").innerHTML = "Wonderful Website Monitoring Service"; 
+    
 }
 
 /**************************************************/
@@ -275,7 +286,7 @@ function loggedOutInit() {
 function loginFetch(event) {
 /* login with email and password */ 
 
-    showSpinner();
+    
     event.preventDefault();
     var loginf = document.getElementById('loginForm');
     var formD = new FormData(loginf); 
@@ -286,19 +297,25 @@ function loginFetch(event) {
         credentials: 'include' 
     })
     .then(function(response) {
-        hideSpinner();
+        
         if(response.status == 401) {
             console.log('login failed');
+            $('#messageModal').modal('show');
+            document.getElementById('messageModal-body').innerHTML = "Login failed. Please try again.";
             // you need to clean localStorage.
             //localStorage.removeItem('csrf');
             return;
         }
         if(response.status == 203) {
             console.log('registration required');
+            $('#messageModal').modal('show');
+            document.getElementById('messageModal-body').innerHTML = "Registration required";
             return;
         }
         if(response.status == 400) {
             console.log('Sorry. System Error occurs.\n Please contact to MoniWeb Administration');
+            $('#messageModal').modal('show');
+            document.getElementById('messageModal-body').innerHTML = "Sorry. System Error occurs.\n Please contact to MoniWeb Administration";
             return;
         }
         // Login succeed, setting should be saved in localStroage. 
@@ -317,9 +334,8 @@ function loginFetch(event) {
 
 function registerFetch(event) {
 /* register a user account */ 
-
-    showSpinner();
     event.preventDefault();   
+    showSpinner('register');
 
     // check validity
     if (inputPassword.value !== inputConfirmPassword.value)  
@@ -348,7 +364,7 @@ function registerFetch(event) {
         credentials: 'include' 
     })
     .then(function(response) {
-        hideSpinner();
+        hideSpinner('register');
         if(response.status == 400) {
             console.log('register failed');
             return;
@@ -356,12 +372,19 @@ function registerFetch(event) {
         if(response.status == 201) {
             console.log('registration completed');
             $('#messageModal').modal('show');
-            document.getElementById('messageModal-body').innerHTML = "Registration Success";
+            document.getElementById('messageModal-body').innerHTML = "User Registration Success";
+            localStorage.setItem('firstname', inputFirstName.value);
+            localStorage.setItem('email', inputEmail.value);
+            localStorage.setItem('theme', 'Light'); // default Light
+            loggedInInit(); 
             return;
         }
-        if(response.status == 200) { // Succcess but Error could have been set. 
+        if((response.status == 206) || (response.status == 200)) { //  Succcess but Error could have been set.
+            // 206 means email already used  
             response.json().then(function(body) {
-                emailMsg.innerHTML = body;
+                $('#messageModal').modal('show');
+                document.getElementById('messageModal-body').innerHTML = body;
+            
             });
         }
         console.log("status:"+response.status)
@@ -375,7 +398,7 @@ function checkFetch(event) {
 /* Check a given IP address work */ 
 /* PUT: idempotent, POST: not idempotent */ 
 
-    showSpinner();
+    showSpinner('check');
     event.preventDefault();
     fetch('http://localhost/PROJ2/api/api.php?action=check&url='+document.getElementById('inputURL').value, 
     {
@@ -383,7 +406,7 @@ function checkFetch(event) {
         credentials: 'include' 
     })
     .then(function(response) {
-        hideSpinner();
+        hideSpinner('check');
         
         if(response.status == 404) { // 404 Not Found
             console.log('URL is not found');
@@ -416,7 +439,7 @@ function showMyPlanFetch(event) {
 
     var i=0;
 
-    showSpinner();
+    
     event.preventDefault();
     
     fetch('http://localhost/PROJ2/api/api.php?action=myplan', 
@@ -425,7 +448,7 @@ function showMyPlanFetch(event) {
         credentials: 'include' 
     })
     .then(function(response) {
-        hideSpinner();
+        
         if(response.status == 404) { // 404 Not Found
             console.log('URL is not found');
             return;
@@ -437,11 +460,13 @@ function showMyPlanFetch(event) {
         
         if(response.status == 200) { // 200 OK 
             response.json().then(function(body) {
-                // console.log(body.customerplanid);
+                console.log("showMyPlanFetch");
+                console.log(body.customerplanid);
                 document.getElementById('planType').innerHTML = body.plantype + " Plan";
                 body.url.forEach(item => {
                     i++; 
-                    document.getElementById('updateURL'+i).value = item;
+                    console.log("updateURL"+i+":"+item);
+                    if (item) document.getElementById('updateURL'+i).value = item;
                 });
                 return ;
             }); 
@@ -460,7 +485,7 @@ function showMyPlanFetch(event) {
 function showProfileFetch(event) {
 /* Display the user profile details */
 
-    showSpinner();
+    
     event.preventDefault();
 
     var formD = new FormData();
@@ -473,7 +498,7 @@ function showProfileFetch(event) {
         credentials: 'include' 
     })
     .then(function(response) {
-        hideSpinner();
+        
         if(response.status == 404) { // 404 Not Found
             console.log('URL is not found');
             // you need to clean localStorage.
@@ -507,7 +532,7 @@ function showProfileFetch(event) {
 function updateProfileFetch(event) {
 /* Update the user profile details */
 
-    showSpinner();
+    
     event.preventDefault();
     updateProfilef= document.getElementById('updateProfileForm');
     var formD = new FormData(updateProfilef);
@@ -519,7 +544,7 @@ function updateProfileFetch(event) {
         credentials: 'include' 
     })
     .then(function(response) {
-        hideSpinner();
+        
         if(response.status == 404) { // 404 Not Found
             console.log('URL is not found');
             // you need to clean localStorage.
@@ -528,6 +553,8 @@ function updateProfileFetch(event) {
         }
         if(response.status == 200) { // 200 OK 
             console.log("profile updated");
+            $('#messageModal').modal('show');
+            document.getElementById('messageModal-body').innerHTML = "Profile updated";
             return;
         }
         if(response.status == 400) { 
@@ -546,7 +573,7 @@ function updateURLFetch(event) {
     var urlList;
     var i, numberofURL;
 
-    showSpinner();
+    
     event.preventDefault();   
     numberofURL = 5;
     /* generate a url list as a string type */
@@ -562,13 +589,16 @@ function updateURLFetch(event) {
         credentials: 'include' 
     })
     .then(function(response) {
-        hideSpinner();
+        
         if(response.status == 400) {
             console.log('register failed');
             return;
         }
         if(response.status == 200) {
             console.log("successfully updated");
+            $('#messageModal').modal('show');
+            document.getElementById('messageModal-body').innerHTML = "Successfully updated.";
+
             return;
         } 
         else {
@@ -581,7 +611,7 @@ function updateURLFetch(event) {
 function upgradePlanFetch(event, level) {
 /* Upgrade the user's plan to the higher, premium plan */
 
-    showSpinner();
+    
     event.preventDefault();  
     
     fetch('http://localhost/PROJ2/api/api.php?action=upgrade&level='+level, 
@@ -590,13 +620,16 @@ function upgradePlanFetch(event, level) {
         credentials: 'include' 
     })
     .then(function(response) {
-        hideSpinner();
+        
         if(response.status == 400) {
             console.log('upgrade failed');
             return;
         }
         if(response.status == 200) {
-            console.log("successfully upgraded to "+level);
+            console.log("successfully upgrade to "+level);
+            $('#messageModal').modal('show');
+            document.getElementById('messageModal-body').innerHTML = "Successfully upgrade to "+level;
+            showMyPlanFetch(event);
             return;
         } else {
             console.log("status:"+response.status);
@@ -618,7 +651,9 @@ function changePasswordFetch(event, level) {
     })
     .then(function(response) {
         if(response.status == 200) { // 200 OK 
-            console.log("Password updated");
+            console.log("");
+            $('#messageModal').modal('show');
+            document.getElementById('messageModal-body').innerHTML = "Password updated.";
             return;
         }
         if(response.status == 400) { 
@@ -639,9 +674,13 @@ function logoutFetch(event, level) {
     })
     .then(function(response) {
         if(response.status == 200) {
+            localStorage.removeItem('firstname');
+            localStorage.removeItem('email');
+            localStorage.removeItem('theme');
             console.log("successfully logged out");
             loggedOutInit();
             return;
+            
         } else {
             console.log("error status:"+response.status);
             return;
@@ -682,12 +721,15 @@ function clearMessage(messageId) {
     document.getElementById(messageId).innerHTML = "";
 }
 
-function showSpinner() {
-    console.log("show Spinner");
-    document.getElementById('spinner').removeAttribute("hidden");
+function showSpinner(tab) {
+    spinnerid = 'spinner'+tab; 
+    console.log('show tab: '+ tab);
+    console.log('show: '+ spinnerid);
+    document.getElementById(spinnerid).removeAttribute("hidden");
 } 
 
-function hideSpinner() {
-    console.log("hide Spinner");
-    document.getElementById('spinner').setAttribute("hidden", "hidden");
+function hideSpinner(tab) {
+    spinnerid = 'spinner'+tab; 
+    console.log("hide: "+ spinnerid);
+    document.getElementById(spinnerid).setAttribute("hidden", "hidden");
 } 

@@ -21,7 +21,12 @@
 .top-0 {
     top: 0% !important;
 }
-
+.top-50 {
+  top: 50% !important;
+}
+.start-50 {
+  left: 50% !important;
+}
 /*!
 * Start Bootstrap - SB Admin v6.0.2 (https://startbootstrap.com/template/sb-admin)
 * Copyright 2013-2020 Start Bootstrap

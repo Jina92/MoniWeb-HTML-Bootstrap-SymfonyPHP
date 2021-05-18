@@ -70,30 +70,27 @@ if ($originPass === false) {
 /********************************************************
  * Session start 
  ********************************************************/
-$session->start(); 
+$session->start();
 // If a session object is not set,  it creates new session object. 
 // If a session object is already set, it means an session is connected 
 // and you can use exiting session object 
 // FYI, login status will be checked in each function of the session object 
 if(!$session->has('sessionObj')) {
-    //echo " session null <br>";
     $session->set('sessionObj', new mwSession);   // If a session object is not defined, create a new session object                                               // user-define class 
 }
 
 $thisSession = $session->get('sessionObj');
-//echo "get session <br> ";
 if(empty($request->query->all())) {   // Error if there are no GET parameters
-    $response->setStatusCode(400);
-    
+    $response->setStatusCode(400);   
 } 
 elseif (($request->query->has('action')) and ($request->query->getAlpha('action') == 'check')) {  // Check an URL
     // Check a single URL, login is not necessary 
     // This is not logged 
     if($request->query->has('url')) { 
         
-        $res = checkURL($request->query->get('url'));
+        $res = checkURL($request->query->get('url')); 
         $response->setStatusCode(200);
-        switch($res) {
+        switch($res) { // returned HTTP Status code
             case 200: 
             case 302: 
                 $response->setContent(json_encode("The site works well."));
@@ -102,7 +99,7 @@ elseif (($request->query->has('action')) and ($request->query->getAlpha('action'
                 $response->setContent(json_encode("The site does not work."));
                 break;
             default: 
-                $response->setContent(json_encode("Check Error"));
+                $response->setContent(json_encode("Please input exact URL form such as www.sitename.com"));
                 break;
         }
     } 
@@ -154,7 +151,7 @@ elseif($request->cookies->has('PHPSESSID')) {
                      // filter(): the 2nd para is null --> if the $_POST is null, return this 2nd para value 
                 if($res) {
                     $response->setStatusCode(206);  // 206 partial content. Email is registered already 
-                    $response->setContent(json_encode("Email exists"));
+                    $response->setContent(json_encode("Email exists. You cannot register with this email."));
                 } 
                 else {  // no registered emails, new profile will be registered 
                     if ($request->request->has('firstname') and
@@ -236,6 +233,7 @@ elseif($request->cookies->has('PHPSESSID')) {
         } 
         // update user profile 
         elseif($selectedAction == 'updateProfile') {
+            //echo "step 0";
             if ($thisSession->isLoggedIn() == false) {
                 $response->setStatusCode(401);  
             }
@@ -246,6 +244,7 @@ elseif($request->cookies->has('PHPSESSID')) {
                     $response->setContent(json_encode("Email exists"));
             } 
             else {  // update profile except password. changing password is separated
+
                 if ($request->request->has('updateFirstName') and
                     $request->request->has('updateLastName') and
                     $request->request->has('updateEmail') and
@@ -254,21 +253,22 @@ elseif($request->cookies->has('PHPSESSID')) {
                     $request->request->has('updateSuburb') and
                     $request->request->has('updateState') and
                     $request->request->has('updatePostcode')) {
+
                     $res = $thisSession->updateProfile(
                         $thisSession->getEmail(),  // old email, which saved in a session variable
                         $request->request->getAlpha('updateFirstName'), 
                         $request->request->getAlpha('updateLastName'),
                         $request->request->filter('updateEmail', null, FILTER_VALIDATE_EMAIL), // new email, which is from form 
                         $request->request->get('updatePhoneNo'),
-                        $request->request->getAlnum('updateAddress'),
-                        $request->request->getAlpha('updateSuburb'),
-                        $request->request->getAlpha('updateState'), 
+                        $request->request->get('updateAddress'),
+                        $request->request->get('updateSuburb'),
+                        $request->request->get('updateState'), 
                         $request->request->getDigits('updatePostcode')); 
                     if ($res === true) {
                         $response->setStatusCode(200); 
                     } 
                     elseif ($res === false) {
-                        $response->setStatusCode(403); // 403 Forbidden
+                        $response->setStatusCode(400); // BAD Request
                     } 
                     elseif ($res === 0) {  
                         $response->setStatusCode(500);  // 500 Internal Server Error
@@ -355,12 +355,9 @@ elseif($request->cookies->has('PHPSESSID')) {
             $response->setStatusCode(200);
         } 
         elseif($selectedAction == 'isloggedin') {
-            //echo "step 1 in isloggedin";
             if ($thisSession->isLoggedIn() == true) {
-                //echo "step 2 in isloggedin";
                 $response->setStatusCode(200);
                 $response->setContent(json_encode(Array('loggedin'=>'true')));
-                //$thisSession->logEvent('127.0.0.1', '1111', 'isloggedin', 200);
             }
             else 
                 $response->setStatusCode(401); 
