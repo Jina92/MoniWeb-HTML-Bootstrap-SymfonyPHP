@@ -12,7 +12,6 @@ use Symfony\Component\HttpFoundation\Session\Storage\NativeSessionStorage;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\Dotenv\Dotenv;
 
-echo "step 1";
 
 $dotenv = new Dotenv();   
 $dotenv->load('./.env');    
@@ -21,7 +20,6 @@ $dotenv->load('./.env');
  *  This should be before "new mwModel", because mwModel constructor use it.  
  */
 
-echo "step 2";
 
 
 /*****************************************************************
@@ -41,7 +39,6 @@ $response = new Response();
  * The session object needs to be instantiated 
  ******************************************************************/
 $session = new Session();
-echo "step 3";
 
 // Miyuki recommended 
 
@@ -49,14 +46,8 @@ echo "step 3";
 $response->headers->set('Access-Control-Allow-Headers', 'origin, content-type, accept');
 $response->headers->set('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
 //$response->headers->set('Access-Control-Allow-Origin', $_ENV['ORIGIN']);
-//$response->headers->set('Access-Control-Allow-Origin', '');
-header('Access-Control-Allow-Origin:https://moniweb-admin.herokuapp.com/');
+$response->headers->set('Access-Control-Allow-Origin', 'http://localhost');
 $response->headers->set('Access-Control-Allow-Credentials', 'true');
-
-echo "step 4";
-echo "env:".$_ENV['ORIGIN'];
-die;
-
 
 
 $requestMethod = $request->getMethod();
@@ -66,18 +57,14 @@ $selectedAction = null;
 /* whiltelist: localhost */ 
 $originHost = $request->headers->get('ORIGIN');
 $originPass = false;
-echo "origin vari: ".$originHost;
-echo "header get:".$request->headers->get('ORIGIN');
-echo "referer get:".$request->headers->get('referer');
-die;
 if (isset($originHost)) {
     // if (strpos($request->headers->get('ORIGIN'), $_ENV['ORIGIN']) !== false) 
-    if (strpos($request->headers->get('ORIGIN'), "moniweb-admin.herokuapp.com") !== false) 
+    if (strpos($request->headers->get('ORIGIN'), "localhost") !== false) 
     
         $originPass = true; 
 } 
 if ($originPass === false) {
-    if (strpos($request->headers->get('referer'), "moniweb-admin.herokuapp.com") !== false) {
+    if (strpos($request->headers->get('referer'), "localhost") !== false) {
         $originPass = true; 
     }
 }

@@ -6,7 +6,7 @@
 
         public function __construct() {
             /* establish a connection to the mySQL database */ 
-            $dbURI = 'mysql:host=' . $_ENV['DBHOST'] . ';port='.$_ENV['DBPORT'].';dbname=' . $_ENV['DATABASE'];
+            $dbURI = 'mysql:host=' . $_ENV['DBHOST'] . ';port='.$_ENV['PORT'].';dbname=' . $_ENV['DATABASE'];
             $this->dbconn = new PDO($dbURI, $_ENV['DBUSER'], $_ENV['DBPASSWORD']);
             $this->dbconn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         }
