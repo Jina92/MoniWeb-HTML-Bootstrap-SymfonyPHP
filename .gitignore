@@ -13,4 +13,5 @@
 ### exported sql 
 *.sql
 ### admin panel 
-admin 
+#admin  // push admin 
+symfony.lock
