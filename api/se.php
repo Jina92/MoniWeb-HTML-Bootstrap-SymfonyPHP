@@ -5,6 +5,10 @@
 
         private int $last_visit = 0;
         private int $first_visit = 0;
+        private int $last_visitSecond = 0;
+        private int $last_visitMicro = 0;
+        private int $first_visitSecond = 0;
+        private int $first_visitMicro = 0;      
         private int $visit_count = 0;
         private int $second_24hour = 86400; // 60 * 60 * 24
         
@@ -44,24 +48,58 @@
                   86400 seconds =  60 seconds * 60 minutes * 24 hours  
          permited: other cases. 
          */ 
-        public function isRateLimited() {
+        // public function isRateLimited() { // Proj 2 
+        
+        //     $this->visit_count++;
+        //     $current_time = time();
+
+        //     if($this->last_visit == $current_time) {  // two visits occur at the same second, limit the second 
+        //                                                  // This is not done by human
+        //         return true;  
+        //     }
+            
+        //     if(($this->visit_count >= 1000) and 
+        //        (($current_time - $this->first_visit) <= $this->second_24hour)) {
+        //         return true;  // more than 500 visits occur in 24 hours, limit 1001-th visit and the following visits
+        //     }
+        //     // Permit the visit 
+        //     if ($this->first_visit == 0) { // This is the first visit 
+        //         $this->first_visit = $current_time;
+        //     }
+        //     $this->last_visit = $current_time;
+        //     return false;
+        // }
+
+        // microtime() return current Unix timestamp as a string 
+        // The string consists of two parts. 
+        // The first part has a "0.xxxxx" format and represent micro second of the current moment. 
+        // The second part has a integer format  and represent second of the current moment. 
+        // The second part is same as the result of time() 
+        public function isRateLimited() { // Proj 4 
         
             $this->visit_count++;
-            $current_time = time();
+            $current_time = microtime();  // [microsecond + seccond] of currunt Unix time 
 
-            if($this->last_visit == $current_time) {
-                return true;  // two visits occur at the same second, limit the second
-                              // This is not done by human 
-            }
-            if(($this->visit_count >= 1000) and 
-               (($current_time - $this->first_visit) <= $this->second_24hour)) {
-                return true;  // more than 1000 visits occur in 24 hours, limit 1001-th visit and the following visits
+            $tempArray = explode(" ", $current_time);
+            $curr_timeSecond = $tempArray[1]; 
+            $curr_timeMicro = $tempArray[0]; 
+
+            // If the gap between two visits is less than 0.5 second, limit the second access. Too many Request.
+            // Caculate the gap 
+            $gapTime = ($curr_timeSecond - $this->last_visitSecond) + ($curr_timeMicro - $this->last_visitMicro);
+            if ($gapTime < 0.5) return true;  
+            
+            if(($this->visit_count >= 500) and   //  If someone visits more than 500 times in 24 hours, limit the access
+               (($curr_timeSecond - $this->first_visitSecond) <= $this->second_24hour)) {
+                return true;  // more than 500 visits occur in 24 hours, limit 501-th visit and the following visits
             }
             // Permit the visit 
-            if ($this->first_visit == 0) { // This is the first visit 
-                $this->first_visit = $current_time;
+            if ($this->first_visitSecond == 0) { // This is the first visit 
+                $this->first_visitSecond = $curr_timeSecond;
+                $this->first_visitMicro = $curr_timeMicro;
             }
-            $this->last_visit = $current_time;
+            $this->last_visitSecond = $curr_timeSecond;
+            $this->last_visitMicro = $curr_timeMicro;
             return false;
         }
 
@@ -79,12 +117,9 @@
                 $this->email = $res['email'];
                 $this->customerid = $res['customerid'];
                 $this->plantype = $res['plantype'];
-                //$this->user_privilege = 1;
-                //$this->user_token = md5(json_encode($res));
                 return Array('email'=>$res['email'],
                 'firstname'=>$res['firstname'],
                 'theme'=>$res['theme']);
-                // 'Hash'=>$this->user_token);
             } 
             else return false; 
         }
@@ -174,6 +209,7 @@
             return $res;
         }
 
+        /*  Upgrade a customer's price plan */
         public function upgradePlan($newPlanType) {
             global $mwDB;
 
@@ -189,16 +225,13 @@
                 return true;
             }
         }
-        // public function logout() {
-        //     $this->last_visit = 0;
-        //     $this->first_visit = 0;
-        //     $this->visit_count = 0;
-        
-        //     $this->customerid = 0;
-        //     $this->email = ""; 
-        //     $this->firstname = "";
-        //     $this->plantype = ""; 
-        // }
+
+        public function getReport() {
+            global $mwDB;
+
+            $res = $mwDB->getReport($this->customerid);  // customised array returned
+            return $res;
+        }
 
         /* 
          log HTTP actions during a session 
@@ -209,5 +242,25 @@
             $res = $mwDB->logEvent($clientip, $sid, $this->email, $this->plantype, $action, $responsecode);  
             return $res;
         }
+
+        public function loginAdmin($email, $password) {
+            global $mwDB;
+  
+             if ((!isset($email)) or (!isset($password))) {
+                 return false;
+             }
+             
+             $res = $mwAdminDB->checkLoginAdmin($email, $password);  // customised array returned
+             if($res === false) {
+                 return false;
+             } elseif(count($res) > 0) {
+                 $this->email = $res['email'];
+                 $this->adminid = $res['adminid'];
+                 return Array('email'=>$res['email'],
+                 'firstname'=>$res['firstname'],
+                 'lastname'=>$res['lastname']); 
+             } 
+             else return false; 
+         }
     }
 ?>

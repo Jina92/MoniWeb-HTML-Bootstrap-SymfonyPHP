@@ -1,3 +1,17 @@
+########################################################
+# Setting Test data you need to change two things 
+######################################################## 
+### CHANGE 1, email in this file #######################
+# For test, you need to change email for login 
+# Currently test0011@email.com is set as a login email. 
+# You need another email which is not registered yet for registration testing. 
+# All tests will be done using the new registered email 
+######################################################## 
+### CHANGE 2, whitelist in api/api.php #################
+# Checking whitelist in api/api.php will prevent you access using php command 
+# You will get 403 error. 
+# You need to comment out the whitelist checking part 
+########################################################
 # Curl options
 #-o: output 
 #-s, --silent : Silent or quiet mode. Don't show progress meter or error messages.
@@ -25,18 +39,18 @@ curl  "http://localhost/PROJ2/api/api.php?action=check&url=www.kf134123412341234
 
 
 # Logout 
-curl  "http://localhost/PROJ2/api/api.php?action=logout" \
--s -o /dev/null -w "%{http_code}" --cookie cookie.txt \
-| grep -q 200 && echo 'Logout: OK' || echo 'Logout: ERR'
-sleep 1s
+# curl  "http://localhost/PROJ2/api/api.php?action=logout" \
+# -s -o /dev/null -w "%{http_code}" --cookie cookie.txt \
+# | grep -q 200 && echo 'Logout: OK' || echo 'Logout: ERR'
+# sleep 1s
 
 # Register profile
 curl  "http://localhost/PROJ2/api/api.php?action=register" \
 --data "firstname=test" \
 --data "lastname=test" \
---data "email=test007@email.com"  \
---data "password=test" \
---data "confirmpassword=test" \
+--data "email=test0011@email.com"  \
+--data "password=Test1234!@#$" \
+--data "confirmpassword=Test1234!@#$" \
 --data "phoneno=0110111222" \
 --data "address=12 south street" \
 --data "suburb=SouthBank" \
@@ -54,22 +68,22 @@ curl "http://localhost/PROJ2/api/api.php?action=myplan" \
 
 # Logout 
 curl  "http://localhost/PROJ2/api/api.php?action=logout" \
--s -o /dev/null -w "%{http_code}" \
+-s -o /dev/null -w "%{http_code}" --cookie cookie.txt \
 | grep -q 200 && echo 'Logout: OK' || echo 'Logout: ERR'
 sleep 1s
 
 # Failed Login with wrong password
 curl  http://localhost/PROJ2/api/api.php?action=login \
---data "loginEmailAddress=test007@email.com" \
---data "loginPassword=kkkk" \
+--data "loginEmailAddress=test0011@email.com" \
+--data "loginPassword=tttt" \
 -s -o /dev/null -w "%{http_code}" \
 | grep -q 401 && echo 'Failed Login: OK' || echo 'Failed Login: ERR'
 
 
 # Successful Login
 curl "http://localhost/PROJ2/api/api.php?action=login" \
---data "loginEmailAddress=test007@email.com" \
---data "loginPassword=test" \
+--data "loginEmailAddress=test0011@email.com" \
+--data "loginPassword=Test1234!@#$" \
 -s -o /dev/null -w "%{http_code}" --cookie-jar cookie.txt \
 |grep -q 200 && echo 'Successful Login: OK' || echo 'Successful Login: ERR'
 
@@ -88,7 +102,7 @@ curl 'http://localhost/PROJ2/api/api.php?action=getProfile' \
 curl 'http://localhost/PROJ2/api/api.php?action=updateProfile' \
 --data "editFirstName=pppp" \
 --data "editLastName=pppp" \
---data "editEmail=test007@email.com" \
+--data "editEmail=test0011@email.com" \
 --data "editPhoneNo=0110111222" \
 --data "editAddress=12 south street" \
 --data "editSuburb=EastPark" \

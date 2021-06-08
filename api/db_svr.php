@@ -6,7 +6,7 @@
 
         public function __construct() {
             /* establish a connection to the mySQL database */ 
-            $dbURI = 'mysql:host=' . $_ENV['DBHOST'] . ';port='.$_ENV['PORT'].';dbname=' . $_ENV['DATABASE'];
+            $dbURI = 'mysql:host=' . $_ENV['DBHOST'] . ';port='.$_ENV['DBPORT'].';dbname=' . $_ENV['DATABASE'];
             $this->dbconn = new PDO($dbURI, $_ENV['DBUSER'], $_ENV['DBPASSWORD']);
             $this->dbconn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         }
@@ -51,14 +51,28 @@
         }
         
         
-        function logStatus($urlid, $errnum, $errmsg) {
+        // function logStatus($urlid, $errnum, $errmsg) {
 
-            $sql = "INSERT INTO monitorstatus(UrlId, MonitorTime, ResultStatus, Description) VALUES (:urlid, CURRENT_TIMESTAMP, :errnum, :errmsg)"; 
+        //     $sql = "INSERT INTO monitorstatus(UrlId, MonitorTime, ResultStatus, Description) VALUES (:urlid, CURRENT_TIMESTAMP, :errnum, :errmsg)"; 
+        //     $stmt = $this->dbconn->prepare($sql);
+        //     $stmt->bindParam(':urlid', $urlid, PDO::PARAM_INT);
+        //     $stmt->bindParam(':errnum', $errnum, PDO::PARAM_INT);
+        //     $stmt->bindParam(':errmsg', $errmsg, PDO::PARAM_STR);
+        //     $result = $stmt->execute();
+        //     echo "rowcount: ".($stmt->rowCount()); 
+        //     if ($stmt->rowCount() < 1 ) return false;
+        //     else return true;
+        // } 
+
+        function logStatus($urlid, $httpcode) {
+
+            $sql = "INSERT INTO monitorstatus(UrlId, MonitorTime, ResultStatus) VALUES (:urlid, CURRENT_TIMESTAMP, :httpcode)"; 
             $stmt = $this->dbconn->prepare($sql);
             $stmt->bindParam(':urlid', $urlid, PDO::PARAM_INT);
-            $stmt->bindParam(':errnum', $errnum, PDO::PARAM_INT);
-            $stmt->bindParam(':errmsg', $errmsg, PDO::PARAM_STR);
+            $stmt->bindParam(':httpcode', $httpcode, PDO::PARAM_INT);
+            //$stmt->bindParam(':errmsg', $errmsg, PDO::PARAM_STR);
             $result = $stmt->execute();
+            echo "rowcount: ".($stmt->rowCount()); 
             if ($stmt->rowCount() < 1 ) return false;
             else return true;
         } 

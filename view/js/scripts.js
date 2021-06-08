@@ -1,5 +1,6 @@
-var set_tab = 'home';  /* current tab */ 
-var temp_elem; 
+var SET_TAB = 'home';  /* current tab */ 
+var SELECTED_MENU = null; // selectedmenu  -- before modifying 
+var myChart = null;
 
 /**************************************************/
 /* initialise the screen for the first connection */ 
@@ -9,7 +10,6 @@ var temp_elem;
     
     var savedMode; 
 
-    console.log("start");
     checkLoggedInFetch();
     /* show default items of sidebar menu before login */ 
     showLoggedOutMenuItems(); 
@@ -28,24 +28,10 @@ var temp_elem;
         document.getElementsByTagName("BODY")[0].classList.toggle("sb-sidenav-toggled");
     });
 
-        // version 2 
-        // $("#sidebarToggle").on("click", function(e) {
-        //     e.preventDefault();
-        //     document.getElementsByTagName("BODY")[0].classList.toggle("sb-sidenav-toggled");
-        // });
-
-        // version 1 
-        // $("body").toggleClass("sb-sidenav-toggled");
-
-    document.getElementById('search').addEventListener('click', function(e) { 
-        // console.log("event listener Search");
-        // document.getElementsByTagName("BODY")[0].classList.remove("sb-sidenav-toggled"); // remove the sidebar menu 
-        showTabHideMenu(e, 'search')
-    });  
-    
+    document.getElementById('search').addEventListener('click', showTabHideMenu_search);  
+    document.getElementById('mwHelp').addEventListener('click', showHelp);  
 })();
 
-//window.addEventListener('load', function(e) { console.log("load"); checkLoggedInFetch(e)});
 
 /**************************************************/
 /* functions for the Navigation sidebar           */ 
@@ -55,12 +41,12 @@ function setMenuActive(selectedmenu) {
     var elements, tabelements;
     var elem;
 
-    set_tab= selectedmenu; /* change the current tab */
+    SET_TAB= selectedmenu; /* change the current tab */
     elements=document.querySelectorAll('a.nav-link');
 
     for (i = 0, len = elements.length; i < len; i++) {
         elem = elements[i];
-        if (elem.id === set_tab)   /* show where am I */
+        if (elem.id === SET_TAB)   /* show where am I */
             elem.classList.add("active");
         else 
             elem.classList.remove("active");
@@ -86,14 +72,37 @@ function showTabHideMenu(event, selectedmenu) {
     setMenuActive(selectedmenu); 
     document.getElementsByTagName("BODY")[0].classList.remove("sb-sidenav-toggled");
 
-    let first_name = localStorage.getItem('firstname');
-    let theme = localStorage.getItem('theme');
-    if ((selectedmenu == 'home') && (first_name)) {
-        document.getElementById("message").innerHTML = "Welcome "+ first_name;
+    if ((selectedmenu == 'home') && (localStorage.getItem('firstname'))) {
+        document.getElementById("message").innerHTML = "Welcome "+ localStorage.getItem('firstname');
     }
-    if ((selectedmenu == 'setting') && (theme)) {
-        document.getElementById("currentmode").innerHTML = theme;
+    if ((selectedmenu == 'setting') && (localStorage.getItem('theme'))) {
+        document.getElementById("currentmode").innerHTML = localStorage.getItem('theme');
     }
+}
+
+function showTabHideMenu_home(event) {
+    event.preventDefault();
+    showTabHideMenu(event, 'home');
+}
+function showTabHideMenu_joinplan(event) {
+    event.preventDefault();
+    showTabHideMenu(event, 'joinplan');
+}
+function showTabHideMenu_login(event) {
+    event.preventDefault();
+    showTabHideMenu(event, 'login');
+}
+function showTabHideMenu_register(event) {
+    event.preventDefault();
+    showTabHideMenu(event, 'register');
+}
+function showTabHideMenu_setting(event) {
+    event.preventDefault();
+    showTabHideMenu(event, 'setting');
+}
+function showTabHideMenu_search(event) {
+    event.preventDefault();
+    showTabHideMenu(event, 'search');
 }
 
 function showTab(event, selectedmenu) {
@@ -110,18 +119,18 @@ function setTheme(mode) {
     navElem = document.getElementsByTagName("NAV")[0];
     navvarElem = document.getElementById("sidenavAccordion");
     currentModeElem = document.getElementById("currentmode");
-    changeMode = document.getElementById("changemode");
-    
+    changeModeElem = document.getElementById("changemodeEnv");
+
     if (mode == 'Light') {
-        
+
         /* remove */ 
         localStorage.removeItem('Dark'); 
         navElem.classList.remove('navbar-dark'); /* top menu */ 
         navElem.classList.remove('bg-dark');
         navvarElem.classList.remove('sb-sidenav-dark'); /* side bar */ 
         navvarElem.classList.remove('bg-dark'); 
-        changeMode.classList.remove('btn-dark');  /* setting: 'change mode' icon */
-        changeMode.classList.remove('text-white'); 
+        changeModeElem.classList.remove('btn-dark');  /* setting: 'change mode' icon */
+        changeModeElem.classList.remove('text-white'); 
         
         /* add */
         currentModeElem.innerHTML = mode;
@@ -144,12 +153,15 @@ function setTheme(mode) {
         navElem.classList.add('bg-dark'); 
         navvarElem.classList.add('sb-sidenav-dark');
         navvarElem.classList.add('bg-dark');
-        changeMode.classList.add('btn-dark');  /* setting: 'change mode' icon */
-        changeMode.classList.add('text-white'); 
+        changeModeElem.classList.add('btn-dark');  /* setting: 'change mode' icon */
+        changeModeElem.classList.add('text-white'); 
     }
 }
 
 function toggleNavMode(event) {
+
+    event.preventDefault();
+
     var toggledTheme; 
 
     toggledTheme = (localStorage.getItem('theme') == 'Dark')?'Light':'Dark';
@@ -158,39 +170,20 @@ function toggleNavMode(event) {
 }
 
 
-// function createMenu() {
-//     var menuField = new array();
-
-//     var container = document.getElementById("sidenavContainer"); 
-//     while (container.hasChildNodes()) {
-//         container.removeChild(container.lastChild);
-//     }
-//     // id, class, href 
-//     menuField.push(new array('myplan', 'nav-link', '#myplantab'));
-//     <a id="myplan" class="nav-link" href="#myplantab" hidden="hidden">My Plan</a>
-//     var menu = document.createElement("A");
-//     menu.id = "myplan";
-//     input.name = "member" + i;
-//     container.appendChild(input);
-    
-//     container.appendChild(document.createElement("br"));
-// }
-
 function addLoggedOutEventListener() {
 
-/* Common of logged in and logged out *************************************************************************/
+/* Common  menu of logged in status and logged out status ******************************************************/
 /* However these are duplicate because the event listener also is reset when a menu is reset  *****************/
     /* NAVIGATION: For the side navigation menu */ 
-    document.getElementById('home').addEventListener('click', function(e) { showTabHideMenu(e, 'home')});   
-    // document.getElementById('check').addEventListener('click', function(e) { showTabHideMenu(e, 'home')});
+    document.getElementById('home').addEventListener('click', showTabHideMenu_home);   
     /* home tab */ 
-    document.getElementById('inputURL').addEventListener('click', function(e) { clearMessage('checkMessage');});
+    document.getElementById('inputURL').addEventListener('click', clearMessageCheckURL);
 
-/* unique of logged out *************************************************************************/ 
+/* unique menu of logged out status*************************************************************************/ 
     /* NAVIGATION: For the side navigation menu */ 
-    document.getElementById('joinplan').addEventListener('click', function(e) { showTabHideMenu(e, 'joinplan')});  
-    document.getElementById('login').addEventListener('click', function(e) { showTabHideMenu(e, 'login')});
-    document.getElementById('register').addEventListener('click', function(e) { showTabHideMenu(e, 'register')}); 
+    document.getElementById('joinplan').addEventListener('click', showTabHideMenu_joinplan);  
+    document.getElementById('login').addEventListener('click', showTabHideMenu_login);
+    document.getElementById('register').addEventListener('click', showTabHideMenu_register); 
 
     /* JoinPlan tab: For links of the join plan tab */
     document.getElementById('registerForJoinFree').addEventListener('click', function(e) { showTab(e, 'register')});
@@ -198,44 +191,44 @@ function addLoggedOutEventListener() {
     document.getElementById('registerForJoinPremium').addEventListener('click', function(e) { showTab(e, 'register')}); 
 
     /* User Register tab: For forms of the register tab */
-    document.getElementById('registerForm').addEventListener('submit', function(e) { registerFetch(e)});
-    //document.getElementById('registerButton').addEventListener('click', function(e) { registerFetch(e)});
-    document.getElementById('loginForm').addEventListener('submit', function(e) { loginFetch(e)});
-    document.getElementById('checkForm').addEventListener('submit', function(e) { checkFetch(e)});
+    document.getElementById('registerForm').addEventListener('submit', registerFetch);
+    document.getElementById('loginForm').addEventListener('submit', loginFetch);
+    document.getElementById('checkForm').addEventListener('submit', checkFetch);
 }
 
 function addLoggedInEventLister() {
 
-/* Common of logged in and logged out *************************************************************************/
+/* Common  menu of logged in status and logged out status ******************************************************/
 /* However these are duplicate because the event listener also is reset when a menu is reset  *****************/
     /* NAVIGATION: For the side navigation menu */ 
-    document.getElementById('home').addEventListener('click', function(e) { showTabHideMenu(e, 'home')});   
-    //document.getElementById('check').addEventListener('click', function(e) { showTabHideMenu(e, 'home')});
+    document.getElementById('home').addEventListener('click', showTabHideMenu_home);   
+    
     /* home tab */ 
-    document.getElementById('inputURL').addEventListener('click', function(e) { clearMessage('checkMessage')});
+    document.getElementById('inputURL').addEventListener('click', clearMessageCheckURL); 
 
-/* unique of logged out *************************************************************************/  
+/* unique menu of the logged in status*************************************************************************/  
     /* NAVIGATION: For the side navigation menu */ 
-    document.getElementById('setting').addEventListener('click', function(e) { showTabHideMenu(e, 'setting')}); 
-    document.getElementById('myplan').addEventListener('click', function(e) { showMyPlanFetch(e)}); // it also calls showTab()
-    document.getElementById('logout').addEventListener('click', function(e) { logoutFetch(e)}); // it also calls showTab()
+    document.getElementById('setting').addEventListener('click', showTabHideMenu_setting); 
+    document.getElementById('myplan').addEventListener('click', showMyPlanFetch); // it also calls showTab()
+    document.getElementById('logout').addEventListener('click', logoutFetch); // it also calls showTab()
+    document.getElementById('report').addEventListener('click', reportFetch);
 
     /* My Plan tab */ 
     document.getElementById('upgradeButton').addEventListener('click', function(e) { showTab(e, 'upgradeplan')});
 
     /*  Upgrade Plan tab */ 
-    document.getElementById('upgradeStandardButton').addEventListener('click', function(e) { upgradePlanFetch(e, 'Standard')});
-    document.getElementById('upgradePremiumButton').addEventListener('click', function(e) { upgradePlanFetch(e, 'Premium')});
+    document.getElementById('upgradeStandardButton').addEventListener('click', upgradePlanStandardFetch);
+    document.getElementById('upgradePremiumButton').addEventListener('click', upgradePlanPremiumFetch);
 
     /* Setting tab: For forms and links of the setting tab */
-    document.getElementById('updateprofile').addEventListener('click', function(e) { showProfileFetch(e)});   
+    document.getElementById('updateprofile').addEventListener('click', showProfileFetch);   
     document.getElementById('changepassword').addEventListener('click', function(e) { showTab(e, 'changepassword')});
-    document.getElementById('changemode').addEventListener('click', function(e) { toggleNavMode(e)}); 
-    document.getElementById('updateProfileForm').addEventListener('submit', function(e) { updateProfileFetch(e)});
-    document.getElementById('changePasswordForm').addEventListener('submit', function(e) { changePasswordFetch(e)});
+    document.getElementById('changemodeEnv').addEventListener('click', toggleNavMode); 
+    document.getElementById('updateProfileForm').addEventListener('submit', updateProfileFetch);
+    document.getElementById('changePasswordForm').addEventListener('submit', changePasswordFetch);
 
     /* Website URL Register tab: links of the registerURL tab */
-    document.getElementById('updateURLForm').addEventListener('submit', function(e) { updateURLFetch(e)});
+    document.getElementById('updateURLForm').addEventListener('submit', updateURLFetch);
 }
 
 function showLoggedOutMenuItems() {
@@ -246,8 +239,6 @@ function showLoggedOutMenuItems() {
     <a id="register" class="nav-link" href="#registertab"><i class="fas fa-registered mr-1"></i> Register</a>
     `; 
 
-    // <a id="check" class="nav-link" href="#hometab"><i class="fas fa-check-square mr-1"></i> Check a Website</a> 
-    
     addLoggedOutEventListener();
 }
 
@@ -256,12 +247,36 @@ function showLoggedInMenuItems() {
     <a id="home" class="nav-link" href="#hometab"><i class="fas fa-home mr-1"></i> Home </a>
     <a id="myplan" class="nav-link" href="#myplantab"><i class="fas fa-poll-h mr-1"></i> <div>My Plan</div></a>
     <a id="setting" class="nav-link" href="#settingtab"><i class="fas fa-cog mr-1"></i> Setting</a>
+    <a id="report" class="nav-link" href="#reporttab"><i class="fas fa-chart-bar mr-1"></i> Report</a>
     <a id="logout" class="nav-link" href="#logout"><i class="fas fa-sign-out-alt mr-1"></i> Logout</a>
     `;
-    //<a id="check" class="nav-link" href="#hometab"><i class="fas fa-check-square mr-1"></i> Check a Website</a>    
-    
 
     addLoggedInEventLister();
+}
+
+function showHelp(event) {
+    event.preventDefault();
+
+    var helpContents = ` 
+         <p> When you registered, you automatically joined the Free plan for monitoring service 
+        and can use our website monitoring service for free. </p>
+        <ul> 
+        <li>After login, you can see MyPlan, Setting and Report menus in the side bar. 
+        <img src=./img/helpmenu.png></img> 
+        </li>
+        <li> You can check and upgrade your plan and add URLs to monitor in MyPlan.  
+        <img src=./img/help1.png></img> 
+        </li>  
+        <li> You can change your password and screen mode in Setting. 
+        <img src=./img/help2.png></img>
+        </li> 
+        <li>You can see your monitoring status report in Report.  
+        <img src=./img/help3.png></img>
+        </li>
+        </ul>
+    `;
+    $('#messageModal').modal('show');
+    document.getElementById('messageModal-body').innerHTML = helpContents;
 }
 
 function loggedInInit() {
@@ -286,7 +301,6 @@ function loggedOutInit() {
 function loginFetch(event) {
 /* login with email and password */ 
 
-    
     event.preventDefault();
     var loginf = document.getElementById('loginForm');
     var formD = new FormData(loginf); 
@@ -302,8 +316,12 @@ function loginFetch(event) {
             console.log('login failed');
             $('#messageModal').modal('show');
             document.getElementById('messageModal-body').innerHTML = "Login failed. Please try again.";
-            // you need to clean localStorage.
-            //localStorage.removeItem('csrf');
+            return;
+        }
+        if(response.status == 429) {
+            console.log('Too many request.');
+            $('#messageModal').modal('show');
+            document.getElementById('messageModal-body').innerHTML = "Too many request. Please try later.";
             return;
         }
         if(response.status == 203) {
@@ -327,7 +345,6 @@ function loginFetch(event) {
 
         }); 
         console.log("login success, status:"+ response.status)
-        //console.log(document.getElementById('messageModal').getAttribute('aria-hidden'));
     })
     .catch(error => console.log(error));
 }
@@ -453,26 +470,22 @@ function showMyPlanFetch(event) {
             console.log('URL is not found');
             return;
         }
-        if(response.status == 403) { 
+        if((response.status == 403) || (response.status == 401 )) { 
             console.log('You need to login');
             return;
         }
         
         if(response.status == 200) { // 200 OK 
             response.json().then(function(body) {
-                console.log("showMyPlanFetch");
-                console.log(body.customerplanid);
                 document.getElementById('planType').innerHTML = body.plantype + " Plan";
                 body.url.forEach(item => {
                     i++; 
-                    console.log("updateURL"+i+":"+item);
                     if (item) document.getElementById('updateURL'+i).value = item;
                 });
                 return ;
             }); 
             
             showTabHideMenu(event, 'myplan');
-            console.log("success");
         }
         if(response.status == 400) { 
             console.log('Error Occurred');
@@ -485,7 +498,6 @@ function showMyPlanFetch(event) {
 function showProfileFetch(event) {
 /* Display the user profile details */
 
-    
     event.preventDefault();
 
     var formD = new FormData();
@@ -608,12 +620,9 @@ function updateURLFetch(event) {
     .catch(error => console.log(error));
 }
 
-function upgradePlanFetch(event, level) {
+function upgradePlanFetch(level) {
 /* Upgrade the user's plan to the higher, premium plan */
 
-    
-    event.preventDefault();  
-    
     fetch('http://localhost/PROJ2/api/api.php?action=upgrade&level='+level, 
     {
         method: 'GET', 
@@ -638,6 +647,16 @@ function upgradePlanFetch(event, level) {
     .catch(error => console.log(error));
 }
 
+function upgradePlanStandardFetch(event) {
+    event.preventDefault();  
+    upgradePlanFetch('Standard');
+}
+
+function upgradePlanPremiumFetch(event) {
+    event.preventDefault();  
+    upgradePlanFetch('Premium');
+}
+
 function changePasswordFetch(event, level) {
 
     event.preventDefault();  
@@ -651,7 +670,7 @@ function changePasswordFetch(event, level) {
     })
     .then(function(response) {
         if(response.status == 200) { // 200 OK 
-            console.log("");
+            console.log("Password updated.");
             $('#messageModal').modal('show');
             document.getElementById('messageModal-body').innerHTML = "Password updated.";
             return;
@@ -659,6 +678,81 @@ function changePasswordFetch(event, level) {
         if(response.status == 400) { 
             console.log('Error Occurred!!');
             return;
+        }
+    })
+    .catch(error => console.log(error));
+}
+
+function displayGraph(urlLabel, countData) { 
+
+    console.log(urlLabel);
+    console.log(countData);
+    var ctx = document.getElementById('statusChart').getContext('2d');
+    if (myChart != null) myChart.destroy();
+        myChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: urlLabel,
+            datasets: [{
+                label: 'Service down number in last 24 hours  ',
+                data: countData,
+                backgroundColor: [
+                    'rgba(255, 99, 132, 0.2)',
+                    'rgba(54, 162, 235, 0.2)',
+                    'rgba(255, 206, 86, 0.2)',
+                    'rgba(75, 192, 192, 0.2)',
+                    'rgba(153, 102, 255, 0.2)'
+                ],
+                borderColor: [
+                    'rgba(255, 99, 132, 1)',
+                    'rgba(54, 162, 235, 1)',
+                    'rgba(255, 206, 86, 1)',
+                    'rgba(75, 192, 192, 1)',
+                    'rgba(153, 102, 255, 1)'
+                ],
+                borderWidth: 1
+            }]
+        },
+        options: {
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
+        }
+    });
+}
+
+function reportFetch(event) {
+    event.preventDefault();
+
+    showTabHideMenu(event, 'report');
+    document.getElementById("reportmessage").innerHTML = null; 
+
+    var i=0;
+
+    fetch('http://localhost/PROJ2/api/api.php?action=report', 
+    {
+        method: 'GET',
+        credentials: 'include' 
+    })
+    .then(function(response) {
+        if((response.status == 403) || (response.status == 401 )) { 
+            console.log('You need to login');
+            return;
+        }
+        if(response.status == 200) { // 200 OK 
+            response.json().then(function(body) {
+                console.log("reportFetch");
+                displayGraph(body.URL, body.numOfDown);
+                return ;
+            }); 
+        }
+        if(response.status == 400) { 
+            response.json().then(function(body) {
+                document.getElementById("reportmessage").innerHTML = body;
+                return;
+            });
         }
     })
     .catch(error => console.log(error));
@@ -697,11 +791,9 @@ function checkLoggedInFetch() {
     })
     .then(function(response) {
         if(response.status == 200) {
-            console.log("in checkLoggedInFetch");
             response.json().then(function(body) { 
-                console.log(body.loggedin);
                 if (body.loggedin == 'true') {
-                    console.log("It is logged in");
+                    console.log("logged in");
                     showLoggedInMenuItems();
                     return;
                 }
@@ -717,19 +809,16 @@ function checkLoggedInFetch() {
 /**************************************************/
 /* Other functions                                */ 
 /**************************************************/
-function clearMessage(messageId) {
-    document.getElementById(messageId).innerHTML = "";
+function clearMessageCheckURL() {
+    document.getElementById("checkMessage").innerHTML = "";
 }
 
 function showSpinner(tab) {
     spinnerid = 'spinner'+tab; 
-    console.log('show tab: '+ tab);
-    console.log('show: '+ spinnerid);
     document.getElementById(spinnerid).removeAttribute("hidden");
 } 
 
 function hideSpinner(tab) {
     spinnerid = 'spinner'+tab; 
-    console.log("hide: "+ spinnerid);
     document.getElementById(spinnerid).setAttribute("hidden", "hidden");
 } 

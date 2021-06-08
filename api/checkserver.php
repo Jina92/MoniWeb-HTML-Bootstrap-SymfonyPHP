@@ -10,23 +10,29 @@ use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 use Symfony\Component\Dotenv\Dotenv;
 
+// require_once('/app/vendor/autoload.php');
+// require_once('/app/api/db_svr.php');
+// require_once('/app/api/ft.php');
 require_once('../vendor/autoload.php');
 require_once('./db_svr.php');
 require_once('./ft.php');
 
 $dotenv = new Dotenv(); 
-$dotenv->load(__DIR__.'/.env');  
+$dotenv->load('./.env');  
 
 $mwDB = new mwModelServer;   // user-defined class for database connection
 
 
 // For test, change the value from Free to Premium 
-$url_list = $mwDB->getURL('Premium');   // true or false 
+//$url_list = $mwDB->getURL('Premium');   // true or false 
+$url_list = $mwDB->getURL('Free'); 
+
 
 $timeout = 5;
+echo "###Foreach url: ";
 foreach ($url_list as $row) {  // row: pair of <urlid, url> 
     $url = $row[1];
-    echo "###Foreach url: ".$url;
+    echo "[". $url."]";
     // Check a website
     if (isset($url)) {
         $c_handle = curl_init();  //Initializes a new session and return a cURL handle for use with the curl_setopt(), curl_exec(), and curl_close() functions
@@ -37,13 +43,14 @@ foreach ($url_list as $row) {  // row: pair of <urlid, url>
         //$http_respond = trim(strip_tags($http_respond ));
         $http_code = curl_getinfo($c_handle, CURLINFO_RESPONSE_CODE); //new alias for CURLINFO_HTTP_CODE
         
-        if (!$http_code) { // Error 
+        //if (!$http_code) { // Error 
             $urlid = $row[0];
-            $result = $mwDB->getEmail($urlid); 
-            sendEmail($result['email'], $result['name'], $url);  // send a notification 
+            //$result = $mwDB->getEmail($urlid); 
+            // sendEmail($result['email'], $result['name'], $url);  // send a notification 
             // log only Error 
-            $mwDB->logStatus($urlid, curl_errno($c_handle), curl_error($c_handle));
-        } 
+            //$mwDB->logStatus($urlid, curl_errno($c_handle), curl_error($c_handle));
+            $mwDB->logStatus($urlid, $http_code);
+        //} 
         curl_close($c_handle);
     }
 }

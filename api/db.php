@@ -6,6 +6,7 @@
 
         public function __construct() {
             /* establish a connection to the mySQL database */ 
+            
             $dbURI = 'mysql:host=' . $_ENV['DBHOST'] . ';port='.$_ENV['PORT'].';dbname=' . $_ENV['DATABASE'];
             $this->dbconn = new PDO($dbURI, $_ENV['DBUSER'], $_ENV['DBPASSWORD']);
             $this->dbconn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
@@ -412,5 +413,90 @@
                 return false;
             }
         }
+
+        function checkLoginAdmin($email, $password) {
+            // echo "step1 ";
+            // check user_id(email), password correct
+            $sql = "SELECT AdminId, Email, Password, FirstName, LastName 
+                    FROM adminuser
+                    WHERE Email = :email";
+            $stmt = $this->dbconn->prepare($sql);
+            $stmt->bindParam(':email', $email, PDO::PARAM_STR);
+            $stmt->execute();
+            // echo "step2 ";
+            if($stmt->rowCount() > 0) {  
+                // echo "rowCount:".$stmt->rowCount()."<br>";
+                $result = $stmt->fetch(PDO::FETCH_ASSOC);
+                if(strlen($result['Email']) > 0) {
+                    // echo $password."<br>";
+                    // echo $result['Password']."<br>";
+                    // echo $result['AdminId']."<br>";
+                    // echo $result['Email']."<br>";
+                        if (password_verify($password, $result['Password'])) {// true: verified  
+                            //echo "step3";
+                            return Array('adminid'=>$result['AdminId'],
+                                'email'=>$result['Email'],
+                                'firstname'=>$result['FirstName'],
+                                'lastname'=>$result['LastName']);
+                                
+                        }
+                        else return false;
+                } else {
+                    return false;
+                }
+            } else {
+                return false;
+            }
+        }
+
+        function getReport($customerid) {
+            $sql = "SELECT CustomerId, b.URL URL, numOfDown FROM (
+                        SELECT CustomerId, u.URL URL, u.UrlId UrlId, COUNT(s.ResultStatus) numOfDown
+                        FROM customerplan c INNER JOIN Plan p 
+                        ON c.PlanId = p.PlanId 
+                        INNER JOIN  customerplanurl u 
+                        ON c.CustomerPlanId = u.CustomerPlanId
+                        INNER JOIN monitorstatus s 
+                        ON u.UrlId = s.UrlId
+                        WHERE c.CustomerId = :cid AND 
+                            ( ResultStatus > 299 OR ResultStatus < 200 ) 
+                        AND URL != '' 
+                        GROUP BY u.URL
+                    ) a RIGHT JOIN
+                    ( 
+                        SELECT DISTINCT u.URL URL, u.UrlId UrlId
+                        FROM customerplan c INNER JOIN  customerplanurl u 
+                        ON c.CustomerPlanId = u.CustomerPlanId
+                        INNER JOIN monitorstatus s 
+                        ON u.UrlId = s.UrlId 
+                        WHERE c.CustomerId = :cid AND 
+                        URL != ''
+                    ) b
+                    ON a.UrlId = b.UrlId"; 
+            $stmt = $this->dbconn->prepare($sql);
+            $stmt->bindParam(':cid', $customerid, PDO::PARAM_INT); //3rd: Explicit data type for the parameter (related to SQL data type) 
+            $stmt->execute();
+            if($stmt->rowCount() > 0) {
+                $result = $stmt->fetchAll();
+
+                if ($result) {
+                    $allURLs = []; 
+                    $allCountVals = [];
+                    foreach ($result as $row) { // create an array of URLs and number of website down  
+                        array_push($allURLs, $row['URL'] ? $row['URL'] : '');
+                        array_push($allCountVals, $row['numOfDown'] ? $row['numOfDown'] : '');
+                    }
+                    return Array('customerid'=>$row['CustomerId'],
+                            'URL'=>$allURLs,
+                            'numOfDown'=>$allCountVals);   
+                }
+                else {
+                    return false;
+                }
+            } else {
+                return Array();
+            }
+        }
+
     }
 ?>

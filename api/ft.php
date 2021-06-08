@@ -33,6 +33,7 @@ function checkURL($url) {
     return($http_code) ;   // Error: return 0
 }
 
+// log test values for debugging.
 function logTestAction($message) {
     $fname = "test.log";
     if (file_exists($fname)) { 
@@ -44,4 +45,18 @@ function logTestAction($message) {
     fwrite($fp, $message."\n");
     fclose($fp);
 }
+
+function setSessionMessage($response, $statusCode, $rawMessage) { 
+    $response->setStatusCode($statusCode);
+    $response->setContent(json_encode($rawMessage));
+}
+//sanitise data sent via POST and SEND
+function testInput($data) {
+    $data = trim($data);
+    $data = stripslashes($data);
+    $data = htmlspecialchars($data);
+    $data = htmlentities($data);
+    return $data;
+}
+
 ?>
