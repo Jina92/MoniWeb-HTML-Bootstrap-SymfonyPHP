@@ -66,16 +66,16 @@ WAMP envirionment assumed
 
 # Used Technics 
 
-### This application uses for the Front End ** 
+### This application uses for the Front End
 
-	- Start Bootstrap v6.0.2 of MIT, which based on bootstrap 4.5.3. 
-	- Chars.js 3.3.2 for generating a report
-	- Font Awesome 5.15.1 
-	- The index.html file includes Bootstrap 4.5.3 and JQuery 3.5.1, Chart.js 3.3.2 and Font Awesome 5.15.1  using CDN resources. 
+- Start Bootstrap v6.0.2 of MIT, which based on bootstrap 4.5.3. 
+- Chars.js 3.3.2 for generating a report
+- Font Awesome 5.15.1 
+- The index.html file includes Bootstrap 4.5.3 and JQuery 3.5.1, Chart.js 3.3.2 and Font Awesome 5.15.1  using CDN resources. 
 
-### This application uses for the Back End ** 
-    - Symfony 5.2.8 including Dotenv and PhpMailer
-    - You can install this with composer specified in the Installation part of this README.md
+### This application uses for the Back End
+- Symfony 5.2.8 including Dotenv and PhpMailer
+- You can install this with composer specified in the Installation part of this README.md
 
 ### You can use later versions of aboves, however, the same versions give you the best result. 
 
